@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Debt Tracker — MoneyFlow</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
+  <link rel="manifest" href="../site.webmanifest">
+  <meta name="theme-color" content="#071724">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+<div data-app-shell></div>
+<main class="app-main" id="main-content">
+  <div class="container">
+    <div class="page-head">
+      <div>
+        <p class="eyebrow">Liabilities</p>
+        <h1>Debt Tracker</h1>
+        <p>Track loans, credit cards and mortgages with payoff forecasts.</p>
+      </div>
+      <button class="btn btn--primary" id="btnAddDebt"><i data-lucide="plus"></i> Add Debt</button>
+    </div>
+
+    <div class="stats-grid" id="debtSummary" style="margin-bottom:var(--space-6);"></div>
+    <div class="grid-2" id="debtGrid"></div>
+  </div>
+</main>
+
+<!-- ADD/EDIT MODAL -->
+<div class="modal" id="debtModal" role="dialog" aria-modal="true" aria-labelledby="debtModalTitle" aria-hidden="true">
+  <div class="modal__panel">
+    <div class="modal__head">
+      <h2 id="debtModalTitle" style="font-size:var(--fs-lg);margin:0;">Add Debt</h2>
+      <button class="modal__close" data-modal-close><i data-lucide="x"></i></button>
+    </div>
+    <div class="modal__body">
+      <form id="debtForm" novalidate>
+        <input type="hidden" id="debtId">
+        <div class="input-group">
+          <div class="field" style="flex:2">
+            <label for="debtName">Debt name / lender</label>
+            <input type="text" id="debtName" placeholder="e.g. Car Loan — First Bank" required>
+          </div>
+          <div class="field" style="flex:1">
+            <label for="debtType">Type</label>
+            <select id="debtType">
+              <option value="credit-card">Credit Card</option>
+              <option value="loan">Personal Loan</option>
+              <option value="mortgage">Mortgage</option>
+              <option value="student">Student Loan</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="input-group">
+          <div class="field">
+            <label for="debtOriginal">Original amount</label>
+            <input type="number" id="debtOriginal" min="0" step="0.01" placeholder="0.00" required>
+          </div>
+          <div class="field">
+            <label for="debtRemaining">Remaining balance</label>
+            <input type="number" id="debtRemaining" min="0" step="0.01" placeholder="0.00" required>
+          </div>
+        </div>
+        <div class="input-group">
+          <div class="field">
+            <label for="debtInterest">Interest rate (%)</label>
+            <input type="number" id="debtInterest" min="0" step="0.01" placeholder="e.g. 18.5">
+          </div>
+          <div class="field">
+            <label for="debtMonthly">Monthly payment</label>
+            <input type="number" id="debtMonthly" min="0" step="0.01" placeholder="0.00">
+          </div>
+        </div>
+        <div class="input-group">
+          <div class="field">
+            <label for="debtDue">Next payment date</label>
+            <input type="date" id="debtDue">
+          </div>
+          <div class="field">
+            <label for="debtLender">Lender (optional)</label>
+            <input type="text" id="debtLender" placeholder="Bank name">
+          </div>
+        </div>
+        <div class="field">
+          <label for="debtNotes">Notes (optional)</label>
+          <input type="text" id="debtNotes" placeholder="Account number, notes…">
+        </div>
+        <div style="display:flex;gap:var(--space-3);margin-top:var(--space-5);">
+          <button type="button" class="btn btn--ghost btn--block" data-modal-close>Cancel</button>
+          <button type="submit" class="btn btn--accent btn--block">Save debt</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE CONFIRM -->
+<div class="modal" id="debtDeleteModal" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modal__panel" style="max-width:360px;">
+    <div class="modal__head">
+      <h2 style="font-size:var(--fs-lg);margin:0;">Delete debt?</h2>
+      <button class="modal__close" data-modal-close><i data-lucide="x"></i></button>
+    </div>
+    <div class="modal__body">
+      <p>This cannot be undone.</p>
+      <div style="display:flex;gap:var(--space-3);">
+        <button class="btn btn--ghost btn--block" data-modal-close>Cancel</button>
+        <button class="btn btn--danger btn--block" id="debtDeleteConfirm">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="../js/storage.js"></script>
+<script src="../js/app.js"></script>
+<script src="../js/command-palette.js"></script>
+<script src="../js/achievements.js"></script>
+<script src="../js/notifications-engine.js"></script>
+<script>
+(function(){
+  initApp('debts.html');
+  const user = Auth.user;
+  if (!user) return;
+  const currency = Auth.prefs.currency || 'USD';
+  let pendingDeleteId = null;
+
+  const TYPE_ICONS = { 'credit-card':'credit-card','loan':'hand-coins','mortgage':'home','student':'graduation-cap','other':'landmark' };
+
+  function render() {
+    const debts = DB.getDebts(user.id);
+    const totalDebt = debts.reduce((s,d) => s + (d.remainingAmountUSD||0), 0);
+    const totalOrig = debts.reduce((s,d) => s + (d.originalAmountUSD||0), 0);
+    const totalMonthly = debts.reduce((s,d) => s + (d.monthlyPaymentUSD||0), 0);
+    const paidOff = debts.filter(d => d.remainingAmountUSD <= 0).length;
+
+    document.getElementById('debtSummary').innerHTML = [
+      { icon:'landmark', bg:'var(--negative-bg)', bar:'var(--negative)', label:'Total Debt', value: fmt(totalDebt) },
+      { icon:'credit-card', bg:'var(--info-bg)', bar:'var(--info)', label:'Monthly Payments', value: fmt(totalMonthly) },
+      { icon:'trending-down', bg:'var(--positive-bg)', bar:'var(--positive)', label:'Paid Off', value: `${paidOff} / ${debts.length}` },
+      { icon:'percent', bg:'rgba(212,160,23,0.15)', bar:'#D4A017', label:'Avg Interest', value: debts.length ? `${(debts.reduce((s,d)=>s+(d.interestRate||0),0)/debts.length).toFixed(1)}%` : '—' },
+    ].map(k => `<div class="stat-card" style="--bar-color:${k.bar};--icon-bg:${k.bg}">
+      <div class="stat-card__accent-bar"></div>
+      <div class="stat-card__icon">${icon(k.icon,'icon-md')}</div>
+      <div class="stat-card__label">${k.label}</div>
+      <div class="stat-card__value mono">${k.value}</div>
+    </div>`).join('');
+
+    const grid = document.getElementById('debtGrid');
+    if (debts.length === 0) {
+      grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-state__icon">${icon('landmark','icon-xl')}</div><h3>No debts tracked</h3><p>Add your loans, credit cards or mortgage to track payoff progress.</p></div>`;
+      refreshIcons(); return;
+    }
+
+    grid.innerHTML = debts.map(d => {
+      const pct = d.originalAmountUSD > 0 ? Math.min(100, ((d.originalAmountUSD - d.remainingAmountUSD) / d.originalAmountUSD) * 100) : 0;
+      const months = DB.debtPayoffMonths(d);
+      const payoffStr = months !== null ? (months <= 0 ? 'Paid off!' : `~${months} month${months!==1?'s':''}`) : '—';
+      const dueStr = d.dueDate ? new Date(d.dueDate).toLocaleDateString(undefined,{month:'short',day:'numeric'}) : '—';
+      const catIcon = TYPE_ICONS[d.type] || 'landmark';
+      const done = d.remainingAmountUSD <= 0;
+      return `<div class="debt-card">
+        <div class="debt-card__header">
+          <div>
+            <div class="debt-card__name">${d.name}</div>
+            <div class="debt-card__type">${icon(catIcon,'icon-xs')} ${d.type.replace('-',' ')}</div>
+          </div>
+          <div style="display:flex;gap:var(--space-2);">
+            <button class="btn btn--ghost btn--sm" onclick="editDebt('${d.id}')">${icon('pencil','icon-xs')}</button>
+            <button class="btn btn--danger btn--sm" onclick="deleteDebt('${d.id}')">${icon('trash-2','icon-xs')}</button>
+          </div>
+        </div>
+        <div class="debt-card__remaining">${done ? icon('check-circle-2','icon-md') : ''}${fmt(d.remainingAmountUSD)}</div>
+        <div style="margin:var(--space-3) 0;">
+          <div style="display:flex;justify-content:space-between;font-size:var(--fs-xs);color:var(--ink-faint);margin-bottom:4px;">
+            <span>${pct.toFixed(0)}% paid</span>
+            <span>${fmt(d.originalAmountUSD)} original</span>
+          </div>
+          <div class="progress-bar"><div class="progress-bar__fill" style="width:${pct}%;--fill-color:${done?'var(--positive)':'var(--negative)'}"></div></div>
+        </div>
+        <div class="debt-card__meta">
+          ${d.interestRate ? `<span>${icon('percent','icon-xs')} ${d.interestRate}% APR</span>` : ''}
+          ${d.monthlyPaymentUSD ? `<span>${icon('calendar','icon-xs')} ${fmt(d.monthlyPaymentUSD)}/mo</span>` : ''}
+          ${d.dueDate ? `<span>${icon('clock','icon-xs')} Due ${dueStr}</span>` : ''}
+          <span class="debt-card__payoff">${icon('flag','icon-xs')} Payoff: ${payoffStr}</span>
+        </div>
+      </div>`;
+    }).join('');
+    refreshIcons();
+    AchievementsEngine.check(user.id);
+  }
+
+  document.getElementById('btnAddDebt').addEventListener('click', () => openModal());
+
+  function openModal(d = null) {
+    document.getElementById('debtModalTitle').textContent = d ? 'Edit Debt' : 'Add Debt';
+    document.getElementById('debtId').value = d ? d.id : '';
+    document.getElementById('debtName').value = d ? d.name : '';
+    document.getElementById('debtType').value = d ? d.type : 'loan';
+    document.getElementById('debtOriginal').value = d ? convertFromUSD(d.originalAmountUSD, currency).toFixed(2) : '';
+    document.getElementById('debtRemaining').value = d ? convertFromUSD(d.remainingAmountUSD, currency).toFixed(2) : '';
+    document.getElementById('debtInterest').value = d ? (d.interestRate || '') : '';
+    document.getElementById('debtMonthly').value = d ? convertFromUSD(d.monthlyPaymentUSD || 0, currency).toFixed(2) : '';
+    document.getElementById('debtDue').value = d ? (d.dueDate || '') : '';
+    document.getElementById('debtLender').value = d ? (d.lender || '') : '';
+    document.getElementById('debtNotes').value = d ? (d.notes || '') : '';
+    Modal.open('debtModal');
+  }
+
+  window.editDebt = (id) => { const d = DB.getDebts(user.id).find(x => x.id === id); if (d) openModal(d); };
+  window.deleteDebt = (id) => { pendingDeleteId = id; Modal.open('debtDeleteModal'); };
+
+  document.getElementById('debtForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const id = document.getElementById('debtId').value;
+    const origRaw = parseFloat(document.getElementById('debtOriginal').value);
+    const remRaw = parseFloat(document.getElementById('debtRemaining').value);
+    const name = document.getElementById('debtName').value.trim();
+    if (!name || isNaN(origRaw) || isNaN(remRaw)) { Toast.error('Fill in name, original and remaining amounts.'); return; }
+    const data = {
+      userId: user.id, name,
+      type: document.getElementById('debtType').value,
+      originalAmountUSD: convertToUSD(origRaw, currency),
+      remainingAmountUSD: convertToUSD(remRaw, currency),
+      interestRate: parseFloat(document.getElementById('debtInterest').value) || 0,
+      monthlyPaymentUSD: convertToUSD(parseFloat(document.getElementById('debtMonthly').value) || 0, currency),
+      dueDate: document.getElementById('debtDue').value || null,
+      lender: document.getElementById('debtLender').value.trim() || null,
+      notes: document.getElementById('debtNotes').value.trim() || null,
+    };
+    if (id) { DB.updateDebt(id, data); Toast.success('Debt updated.'); }
+    else    { DB.addDebt(data); Toast.success('Debt added.'); }
+    Modal.close('debtModal');
+    render();
+  });
+
+  document.getElementById('debtDeleteConfirm').addEventListener('click', () => {
+    if (!pendingDeleteId) return;
+    DB.deleteDebt(pendingDeleteId);
+    pendingDeleteId = null;
+    Modal.close('debtDeleteModal');
+    Toast.success('Debt removed.');
+    render();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Financial Health — MoneyFlow</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
+  <link rel="manifest" href="../site.webmanifest">
+  <meta name="theme-color" content="#071724">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <style>
+    .health-hero {
+      background: linear-gradient(135deg, var(--navy-800) 0%, var(--navy-900) 100%);
+      border-radius: var(--radius-lg); padding: clamp(2rem,4vw,3rem);
+      display: flex; flex-wrap: wrap; gap: 2.5rem; align-items: center;
+      color: #fff; margin-bottom: var(--space-6);
+    }
+    .health-ring-svg { flex-shrink: 0; }
+    .health-ring-bg  { fill: none; stroke: rgba(255,255,255,0.12); stroke-width: 10; }
+    .health-ring-fill { fill: none; stroke-width: 10; stroke-linecap: round;
+      transform: rotate(-90deg); transform-origin: 50% 50%;
+      transition: stroke-dashoffset 1.2s cubic-bezier(0.4,0,0.2,1), stroke 0.4s; }
+    .health-hero__num { font-family: var(--font-mono); font-size: 3.2rem; font-weight: 700; line-height: 1; }
+    .health-hero__grade { font-size: var(--fs-md); font-weight: 600; margin-top: 4px; }
+    .health-hero__sub { color: rgba(255,255,255,0.6); font-size: var(--fs-sm); margin-top: 8px; }
+    .health-hero__recalc { margin-top: 1.2rem; }
+
+    .pillar-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--space-4); margin-bottom: var(--space-6); }
+    .pillar-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: var(--space-5); }
+    .pillar-card__label { font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: 0.07em; color: var(--ink-faint); font-weight: 700; margin-bottom: var(--space-2); }
+    .pillar-card__score { font-family: var(--font-mono); font-size: var(--fs-xl); font-weight: 700; color: var(--ink); }
+    .pillar-card__max { font-size: var(--fs-xs); color: var(--ink-faint); }
+    .pillar-card__bar { margin-top: var(--space-3); height: 8px; background: var(--border); border-radius: var(--radius-pill); overflow: hidden; }
+    .pillar-card__bar-fill { height: 100%; border-radius: var(--radius-pill); transition: width 1s cubic-bezier(0.4,0,0.2,1); }
+
+    .rec-card { display: flex; gap: var(--space-4); padding: var(--space-4); background: var(--bg-elevated);
+      border: 1px solid var(--border); border-left: 3px solid var(--info); border-radius: var(--radius-md);
+      margin-bottom: var(--space-3); }
+    .rec-card__icon { flex-shrink: 0; width: 36px; height: 36px; border-radius: var(--radius-sm);
+      background: var(--info-bg); color: var(--info); display: flex; align-items: center; justify-content: center; }
+    .rec-card__title { font-weight: 700; font-size: var(--fs-sm); margin-bottom: 2px; }
+    .rec-card__body { font-size: var(--fs-sm); color: var(--ink-soft); }
+  </style>
+</head>
+<body>
+<div data-app-shell></div>
+<main class="app-main" id="main-content">
+  <div class="container">
+    <div class="page-head">
+      <div>
+        <p class="eyebrow">Wellness</p>
+        <h1>Financial Health Score</h1>
+        <p>A 0–100 score across four financial pillars, with personalised recommendations.</p>
+      </div>
+    </div>
+
+    <!-- HERO RING -->
+    <div class="health-hero" id="healthHero">
+      <div style="text-align:center;">
+        <svg class="health-ring-svg" width="160" height="160" viewBox="0 0 160 160" aria-hidden="true">
+          <circle class="health-ring-bg" cx="80" cy="80" r="68"/>
+          <circle class="health-ring-fill" id="healthRingFill" cx="80" cy="80" r="68" stroke="#4F9D1D"
+            stroke-dasharray="427.26" stroke-dashoffset="427.26"/>
+        </svg>
+      </div>
+      <div>
+        <div class="health-hero__num" id="scoreNum">—</div>
+        <div class="health-hero__grade" id="scoreGrade">Calculating…</div>
+        <p class="health-hero__sub">Based on savings rate, budget adherence, debt ratio and goal progress over the last 3 months.</p>
+        <button class="btn btn--accent btn--sm health-hero__recalc" id="recalcBtn">Recalculate score</button>
+      </div>
+    </div>
+
+    <!-- PILLARS -->
+    <div class="section__head"><h2>Score Breakdown</h2></div>
+    <div class="pillar-grid" id="pillarGrid"></div>
+
+    <!-- RECOMMENDATIONS -->
+    <div class="section__head"><h2>Recommendations</h2></div>
+    <div id="recList"></div>
+  </div>
+</main>
+
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="../js/storage.js"></script>
+<script src="../js/app.js"></script>
+<script src="../js/command-palette.js"></script>
+<script src="../js/achievements.js"></script>
+<script src="../js/notifications-engine.js"></script>
+<script>
+(function(){
+  initApp('financial-health.html');
+  const user = Auth.user;
+  if (!user) return;
+
+  const C = 2 * Math.PI * 68; // circumference
+
+  function renderScore(score) {
+    const fill = document.getElementById('healthRingFill');
+    const num  = document.getElementById('scoreNum');
+    const grade = document.getElementById('scoreGrade');
+    fill.style.stroke = score.color;
+    fill.style.strokeDashoffset = C - (score.total / 100) * C;
+    num.textContent = score.total;
+    num.style.color = score.color;
+    grade.textContent = score.grade;
+    grade.style.color = score.color;
+
+    // Pillars
+    const p = score.pillars;
+    const pillars = [
+      { label:'Savings Rate', pts: p.savingsPts, max: 30, icon:'piggy-bank', color:'var(--positive)' },
+      { label:'Budget Adherence', pts: p.budgetPts, max: 25, icon:'shield-check', color:'var(--info)' },
+      { label:'Debt Ratio', pts: p.debtPts, max: 25, icon:'landmark', color:'var(--accent-strong)' },
+      { label:'Goal Progress', pts: p.goalPts, max: 20, icon:'target', color:'#9B86E0' },
+    ];
+    document.getElementById('pillarGrid').innerHTML = pillars.map(pl => `
+      <div class="pillar-card">
+        <div class="pillar-card__label">${pl.label}</div>
+        <div><span class="pillar-card__score">${pl.pts}</span><span class="pillar-card__max"> / ${pl.max}</span></div>
+        <div class="pillar-card__bar">
+          <div class="pillar-card__bar-fill" style="width:${(pl.pts/pl.max)*100}%;background:${pl.color};"></div>
+        </div>
+      </div>`).join('');
+
+    // Recommendations
+    const recs = buildRecs(score, user.id);
+    document.getElementById('recList').innerHTML = recs.map(r => `
+      <div class="rec-card">
+        <div class="rec-card__icon">${icon(r.icon,'icon-sm')}</div>
+        <div>
+          <div class="rec-card__title">${r.title}</div>
+          <div class="rec-card__body">${r.body}</div>
+        </div>
+      </div>`).join('') || '<p>Great work — no critical recommendations right now.</p>';
+
+    refreshIcons();
+    AchievementsEngine.check(user.id);
+  }
+
+  function buildRecs(score, userId) {
+    const recs = [];
+    if (score.pillars.savingsPts < 15)
+      recs.push({ icon:'piggy-bank', title:'Boost your savings rate', body:'Try to save at least 20% of your monthly income. Review recurring expenses and identify subscriptions you can cut.' });
+    if (score.pillars.budgetPts < 15)
+      recs.push({ icon:'shield-check', title:'Set a monthly budget', body:'Adding a monthly spending limit and per-category budgets can dramatically improve your score and financial discipline.' });
+    if (score.pillars.debtPts < 15)
+      recs.push({ icon:'landmark', title:'Reduce your debt load', body:'Track all debts in the Debt Tracker and focus extra payments on the highest-interest balance first (avalanche method).' });
+    if (score.pillars.goalPts < 10)
+      recs.push({ icon:'target', title:'Create savings goals', body:'Set specific goals with deadlines — emergency fund, vacation, or big purchase. Even small deposits add up quickly.' });
+    if (score.total >= 70)
+      recs.push({ icon:'trending-up', title:'Consider investing', body:'With a solid health score, directing surplus savings into investments can grow your wealth long-term. Check the Investment Tracker.' });
+    return recs;
+  }
+
+  function calculate() {
+    const score = DB.calculateHealthScore(user.id);
+    renderScore(score);
+  }
+
+  // Load cached or calculate
+  const cached = DB.getHealthScore(user.id);
+  if (cached) renderScore(cached);
+  else calculate();
+
+  document.getElementById('recalcBtn').addEventListener('click', () => {
+    calculate();
+    Toast.success('Health score recalculated.');
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,269 @@
+/* =========================================================================
+   dashboard.css — stat cards, KPI strip, chart layout, insights
+   ========================================================================= */
+
+/* ── gradient hero card (net worth / balance) ─────────────────────────────── */
+
+.hero-card {
+  background: linear-gradient(135deg, var(--navy-800) 0%, var(--navy-900) 65%, #081B27 100%);
+  border-radius: var(--radius-lg);
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  border: none;
+}
+.hero-card::before {
+  content: "";
+  position: absolute;
+  top: -40%;
+  right: -10%;
+  width: 60%;
+  aspect-ratio: 1;
+  background: radial-gradient(circle, rgba(189,247,92,0.18) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-card::after {
+  content: "";
+  position: absolute;
+  bottom: -30%;
+  left: -5%;
+  width: 40%;
+  aspect-ratio: 1;
+  background: radial-gradient(circle, rgba(91,110,245,0.16) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-card__eyebrow {
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--lime);
+  font-weight: 700;
+  margin-bottom: var(--space-2);
+}
+.hero-card__amount {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 600;
+  line-height: 1.1;
+  color: #fff;
+  margin-bottom: var(--space-4);
+}
+.hero-card__change {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--fs-sm);
+  color: rgba(255,255,255,0.7);
+}
+.hero-card__change .positive { color: var(--lime); }
+.hero-card__change .negative { color: #FF8C9A; }
+
+.hero-card__sub-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--space-4);
+  margin-top: var(--space-5);
+  padding-top: var(--space-5);
+  border-top: 1px solid rgba(255,255,255,0.12);
+}
+.hero-sub-stat__label {
+  font-size: var(--fs-xs);
+  color: rgba(255,255,255,0.55);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: var(--space-1);
+}
+.hero-sub-stat__value {
+  font-family: var(--font-mono);
+  font-size: var(--fs-md);
+  font-weight: 600;
+  color: #fff;
+}
+.hero-sub-stat__value.pos { color: var(--lime); }
+.hero-sub-stat__value.neg { color: #FF8C9A; }
+
+/* ── category icon circle ─────────────────────────────────────────────────── */
+
+.cat-icon-circle {
+  width: 44px; height: 44px;
+  border-radius: var(--radius-md);
+  background: var(--positive-bg);
+  color: var(--positive);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem;
+}
+
+/* ── stat card strip ───────────────────────────────────────────────────── */
+
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4) var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--transition), transform var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+.stat-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+
+.stat-card__accent-bar {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--bar-color, var(--accent));
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.stat-card__icon {
+  width: 40px; height: 40px;
+  border-radius: var(--radius-sm);
+  background: var(--icon-bg, var(--info-bg));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2em;
+}
+.stat-card__label {
+  font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: 0.07em;
+  color: var(--ink-faint); font-weight: 700;
+}
+.stat-card__value {
+  font-family: var(--font-mono);
+  font-size: clamp(1.25rem, 2vw, 1.5rem);
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1;
+}
+.stat-card__trend {
+  font-size: var(--fs-xs); color: var(--ink-faint);
+  display: flex; align-items: center; gap: 4px;
+}
+.trend-up { color: var(--positive); }
+.trend-down { color: var(--negative); }
+
+/* ── budget health score ring ────────────────────────────────────────────── */
+
+.health-score {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+.health-score__ring { position: relative; width: 80px; height: 80px; }
+.health-score__ring svg { transform: rotate(-90deg); }
+.health-score__ring-bg { fill: none; stroke: var(--border-strong); stroke-width: 6; }
+.health-score__ring-fill {
+  fill: none; stroke-width: 6;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 800ms cubic-bezier(0.4,0,0.2,1);
+  stroke: var(--score-color, var(--positive));
+}
+.health-score__num {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono); font-weight: 700; font-size: var(--fs-md);
+  color: var(--ink);
+}
+.health-score__label { font-size: var(--fs-xs); text-align: center; color: var(--ink-faint); }
+
+/* ── quick-action buttons ─────────────────────────────────────────────────── */
+
+.quick-actions { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+
+/* ── insight cards ────────────────────────────────────────────────────────── */
+
+.insight-card {
+  display: flex;
+  gap: var(--space-4);
+  align-items: flex-start;
+  padding: var(--space-4);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--insight-color, var(--info));
+  border-radius: var(--radius-md);
+  font-size: var(--fs-sm);
+  transition: background var(--transition);
+}
+.insight-card:hover { background: var(--surface); }
+.insight-card__icon { font-size: 1.4rem; flex-shrink: 0; line-height: 1; }
+.insight-card__title { font-weight: 700; color: var(--ink); margin-bottom: 2px; }
+.insight-card__body { color: var(--ink-soft); }
+
+/* ── progress bars ─────────────────────────────────────────────────────────── */
+
+.progress-bar {
+  height: 8px;
+  background: var(--border);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+.progress-bar__fill {
+  height: 100%;
+  border-radius: var(--radius-pill);
+  background: var(--fill-color, var(--positive));
+  transition: width 600ms cubic-bezier(0.4,0,0.2,1);
+  position: relative;
+}
+.progress-bar__fill.warn { background: #D4A017; }
+.progress-bar__fill.over { background: var(--negative); }
+
+/* striped overspend style */
+.progress-bar__fill.over::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(45deg, transparent, transparent 4px, rgba(255,255,255,0.15) 4px, rgba(255,255,255,0.15) 8px);
+}
+
+.budget-item {
+  display: flex; flex-direction: column; gap: var(--space-2);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--border);
+}
+.budget-item:last-child { border-bottom: none; }
+.budget-item__row { display: flex; justify-content: space-between; align-items: center; gap: var(--space-3); flex-wrap: wrap; }
+.budget-item__cat { display: flex; align-items: center; gap: var(--space-2); font-weight: 600; font-size: var(--fs-sm); }
+.budget-item__amounts { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--ink-faint); }
+
+/* ── recent transactions mini-list ────────────────────────────────────────── */
+
+.tx-mini-item {
+  display: flex; align-items: center; gap: var(--space-3);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--border);
+}
+.tx-mini-item:last-child { border-bottom: none; }
+.tx-mini__icon {
+  width: 36px; height: 36px; border-radius: var(--radius-sm);
+  background: var(--icon-bg, var(--info-bg));
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  font-size: 1rem;
+}
+.tx-mini__info { flex: 1; min-width: 0; }
+.tx-mini__cat { font-weight: 600; font-size: var(--fs-sm); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tx-mini__note { font-size: var(--fs-xs); color: var(--ink-faint); }
+.tx-mini__right { text-align: right; flex-shrink: 0; }
+.tx-mini__amount { font-family: var(--font-mono); font-size: var(--fs-sm); font-weight: 700; }
+.tx-mini__date { font-size: var(--fs-xs); color: var(--ink-faint); }
+
+/* ── goal progress cards ───────────────────────────────────────────────────── */
+
+.goal-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--transition), transform var(--transition);
+}
+.goal-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+.goal-card__head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: var(--space-3); gap: var(--space-2); }
+.goal-card__name { font-weight: 700; font-size: var(--fs-base); }
+.goal-card__pct { font-family: var(--font-mono); font-size: var(--fs-xl); font-weight: 700; color: var(--positive); }
+.goal-card__amounts { display: flex; justify-content: space-between; font-size: var(--fs-xs); color: var(--ink-faint); margin-top: var(--space-2); }
+.goal-card__deadline { font-size: var(--fs-xs); color: var(--ink-faint); margin-top: var(--space-2); }
+.goal-card__actions { display: flex; gap: var(--space-2); margin-top: var(--space-4); }

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Achievements — MoneyFlow</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
+  <link rel="manifest" href="../site.webmanifest">
+  <meta name="theme-color" content="#071724">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <style>
+    .ach-hero {
+      background: linear-gradient(135deg, var(--navy-800) 0%, var(--navy-900) 100%);
+      border-radius: var(--radius-lg); padding: clamp(1.5rem,3vw,2.5rem);
+      display: flex; flex-wrap: wrap; gap: var(--space-5); align-items: center;
+      color: #fff; margin-bottom: var(--space-6);
+    }
+    .ach-hero__circle {
+      width: 96px; height: 96px; border-radius: 50%;
+      background: rgba(189,247,92,0.12); border: 2px solid rgba(189,247,92,0.3);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .ach-hero__num { font-family: var(--font-mono); font-size: 2rem; font-weight: 700; color: var(--lime); line-height: 1; }
+    .ach-hero__label { font-size: var(--fs-2xs); color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.08em; }
+    .ach-hero__progress { flex: 1; min-width: 200px; }
+    .ach-hero__progress h2 { color: #fff; margin-bottom: var(--space-2); font-size: var(--fs-lg); }
+    .ach-hero__bar-bg { height: 10px; background: rgba(255,255,255,0.12); border-radius: var(--radius-pill); overflow: hidden; }
+    .ach-hero__bar-fill { height: 100%; background: var(--lime); border-radius: var(--radius-pill); transition: width 0.8s cubic-bezier(0.4,0,0.2,1); }
+    .ach-hero__pct { font-size: var(--fs-xs); color: rgba(255,255,255,0.5); margin-top: var(--space-2); }
+
+    .ach-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--space-4); }
+    .ach-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
+      padding: var(--space-5); display: flex; gap: var(--space-4); align-items: flex-start;
+      transition: box-shadow var(--transition), transform var(--transition), border-color var(--transition);
+      position: relative; overflow: hidden;
+    }
+    .ach-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .ach-card.is-unlocked { border-color: rgba(189,247,92,0.3); }
+    .ach-card.is-unlocked::after {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--lime), var(--lime-dark));
+    }
+    .ach-card.is-locked { opacity: 0.55; filter: grayscale(0.7); }
+    .ach-card__icon {
+      width: 52px; height: 52px; border-radius: var(--radius-md); flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; font-size: 1.4rem;
+    }
+    .ach-card.is-unlocked .ach-card__icon { background: var(--positive-bg); color: var(--positive); }
+    .ach-card.is-locked   .ach-card__icon { background: var(--bg-elevated); color: var(--ink-faint); }
+    .ach-card__badge {
+      position: absolute; top: var(--space-3); right: var(--space-3);
+      background: var(--lime); color: var(--navy); font-size: var(--fs-2xs);
+      font-weight: 800; padding: 2px 8px; border-radius: var(--radius-pill);
+    }
+    .ach-card__title { font-weight: 700; font-size: var(--fs-sm); margin-bottom: 3px; }
+    .ach-card__desc { font-size: var(--fs-xs); color: var(--ink-soft); line-height: 1.5; }
+    .ach-card__date { font-size: var(--fs-2xs); color: var(--ink-faint); margin-top: var(--space-2); display: flex; align-items: center; gap: 4px; }
+    .ach-card__locked-label { font-size: var(--fs-xs); color: var(--ink-faint); margin-top: var(--space-2); display: flex; align-items: center; gap: 4px; }
+  </style>
+</head>
+<body>
+<div data-app-shell></div>
+<main class="app-main" id="main-content">
+  <div class="container">
+    <div class="page-head">
+      <div>
+        <p class="eyebrow">Progress</p>
+        <h1>Achievements</h1>
+        <p>Unlock badges by reaching financial milestones.</p>
+      </div>
+    </div>
+
+    <!-- Hero progress -->
+    <div class="ach-hero">
+      <div class="ach-hero__circle">
+        <div class="ach-hero__num" id="achUnlocked">0</div>
+        <div class="ach-hero__label">Earned</div>
+      </div>
+      <div class="ach-hero__progress">
+        <h2>Your achievement progress</h2>
+        <div class="ach-hero__bar-bg">
+          <div class="ach-hero__bar-fill" id="achProgressBar" style="width:0%"></div>
+        </div>
+        <div class="ach-hero__pct" id="achProgressLabel"></div>
+      </div>
+    </div>
+
+    <!-- Filter tabs -->
+    <div class="pill-tabs" role="group" aria-label="Filter achievements">
+      <button class="pill-tab is-active" data-filter="all">All</button>
+      <button class="pill-tab" data-filter="unlocked">Unlocked</button>
+      <button class="pill-tab" data-filter="locked">Locked</button>
+    </div>
+
+    <div class="ach-grid" id="achGrid"></div>
+  </div>
+</main>
+
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="../js/storage.js"></script>
+<script src="../js/app.js"></script>
+<script src="../js/command-palette.js"></script>
+<script src="../js/achievements.js"></script>
+<script src="../js/notifications-engine.js"></script>
+<script>
+(function(){
+  initApp('achievements.html');
+  const user = Auth.user;
+  if (!user) return;
+
+  // Run engine so any newly earned ones are awarded
+  AchievementsEngine.check(user.id);
+
+  const ALL_DEFS = AchievementsEngine.ACHIEVEMENTS;
+  let currentFilter = 'all';
+
+  function render() {
+    const earned = DB.getAchievements(user.id);
+    const earnedKeys = new Set(earned.map(a => a.key));
+    const total = ALL_DEFS.length;
+    const unlockedCount = earnedKeys.size;
+
+    document.getElementById('achUnlocked').textContent = unlockedCount;
+    const pct = total > 0 ? (unlockedCount / total) * 100 : 0;
+    document.getElementById('achProgressBar').style.width = `${pct}%`;
+    document.getElementById('achProgressLabel').textContent = `${unlockedCount} of ${total} achievements unlocked (${pct.toFixed(0)}%)`;
+
+    let filtered = ALL_DEFS;
+    if (currentFilter === 'unlocked') filtered = ALL_DEFS.filter(d => earnedKeys.has(d.key));
+    if (currentFilter === 'locked')   filtered = ALL_DEFS.filter(d => !earnedKeys.has(d.key));
+
+    const grid = document.getElementById('achGrid');
+    if (filtered.length === 0) {
+      grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-state__icon">${icon('trophy','icon-xl')}</div><h3>${currentFilter==='unlocked'?'No achievements unlocked yet':'All achievements unlocked!'}</h3></div>`;
+      refreshIcons(); return;
+    }
+
+    grid.innerHTML = filtered.map(def => {
+      const isUnlocked = earnedKeys.has(def.key);
+      const record = earned.find(a => a.key === def.key);
+      const dateStr = record ? new Date(record.unlockedAt).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'}) : null;
+      return `<div class="ach-card ${isUnlocked ? 'is-unlocked' : 'is-locked'}">
+        ${isUnlocked ? `<span class="ach-card__badge">Unlocked</span>` : ''}
+        <div class="ach-card__icon">${icon(def.iconName || 'award', 'icon-lg')}</div>
+        <div>
+          <div class="ach-card__title">${def.title}</div>
+          <div class="ach-card__desc">${def.desc}</div>
+          ${isUnlocked && dateStr
+            ? `<div class="ach-card__date">${icon('calendar','icon-xs')} ${dateStr}</div>`
+            : `<div class="ach-card__locked-label">${icon('lock','icon-xs')} Not yet unlocked</div>`
+          }
+        </div>
+      </div>`;
+    }).join('');
+    refreshIcons();
+  }
+
+  document.querySelectorAll('.pill-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.pill-tab').forEach(b => b.classList.remove('is-active'));
+      btn.classList.add('is-active');
+      currentFilter = btn.getAttribute('data-filter');
+      render();
+    });
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

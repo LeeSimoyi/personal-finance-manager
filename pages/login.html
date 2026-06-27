@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In — MoneyFlow</title>
+  <meta name="description" content="Sign in to MoneyFlow, your personal finance command centre.">
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/icons/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../assets/icons/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../assets/icons/apple-touch-icon.png">
+  <link rel="manifest" href="../site.webmanifest">
+  <meta name="theme-color" content="#071724">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="../css/auth.css">
+</head>
+<body>
+<div class="auth-page">
+  <!-- decorative left panel -->
+  <aside class="auth-promo" aria-hidden="true">
+    <div class="auth-promo__content">
+      <div class="auth-promo__logo" id="promoLogo"></div>
+      <h2 class="auth-promo__headline">Your money,<br><em>brilliantly</em> organised.</h2>
+      <ul class="auth-promo__feats">
+        <li><span class="feat-icon"><i data-lucide="bell-ring"></i></span> Real-time budget tracking &amp; alerts</li>
+        <li><span class="feat-icon"><i data-lucide="sparkles"></i></span> Smart financial insights &amp; recommendations</li>
+        <li><span class="feat-icon"><i data-lucide="target"></i></span> Savings goals with progress tracking</li>
+        <li><span class="feat-icon"><i data-lucide="bar-chart-3"></i></span> Beautiful analytics &amp; reports</li>
+        <li><span class="feat-icon"><i data-lucide="globe"></i></span> Supports USD, EUR, GBP, INR, ZWL</li>
+      </ul>
+    </div>
+    <div class="auth-promo__art" id="promoArt" aria-hidden="true">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 560" width="100%" height="100%" role="img" aria-label="Illustration of a finance dashboard with rising trend line and coins">
+        <defs>
+          <linearGradient id="cardGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#0F2638"/>
+            <stop offset="100%" stop-color="#0A1B29"/>
+          </linearGradient>
+          <linearGradient id="barGrad" x1="0" y1="1" x2="0" y2="0">
+            <stop offset="0%" stop-color="#8FD93A"/>
+            <stop offset="100%" stop-color="#BDF75C"/>
+          </linearGradient>
+          <linearGradient id="lineGrad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#BDF75C" stop-opacity="0.2"/>
+            <stop offset="100%" stop-color="#BDF75C" stop-opacity="1"/>
+          </linearGradient>
+          <radialGradient id="coinGrad" cx="35%" cy="30%" r="75%">
+            <stop offset="0%" stop-color="#E8FFB0"/>
+            <stop offset="100%" stop-color="#BDF75C"/>
+          </radialGradient>
+          <filter id="softShadow" x="-50%" y="-50%" width="200%" height="200%">
+            <feDropShadow dx="0" dy="14" stdDeviation="18" flood-color="#000000" flood-opacity="0.35"/>
+          </filter>
+        </defs>
+        <g transform="translate(430,80)" filter="url(#softShadow)">
+          <circle r="34" fill="url(#coinGrad)"/>
+          <text x="0" y="9" font-family="Inter, sans-serif" font-weight="800" font-size="28" fill="#071724" text-anchor="middle">$</text>
+        </g>
+        <g transform="translate(95,420)" filter="url(#softShadow)">
+          <circle r="24" fill="url(#coinGrad)" opacity="0.92"/>
+          <text x="0" y="7" font-family="Inter, sans-serif" font-weight="800" font-size="20" fill="#071724" text-anchor="middle">$</text>
+        </g>
+        <circle cx="480" cy="330" r="10" fill="none" stroke="#BDF75C" stroke-width="3" opacity="0.55"/>
+        <circle cx="70" cy="170" r="6" fill="#BDF75C" opacity="0.5"/>
+        <g filter="url(#softShadow)">
+          <rect x="90" y="150" width="380" height="260" rx="28" fill="url(#cardGrad)" stroke="#1C3A52" stroke-width="1.5"/>
+          <circle cx="128" cy="190" r="9" fill="#BDF75C"/>
+          <rect x="148" y="184" width="110" height="11" rx="5.5" fill="#CFE3D8" opacity="0.55"/>
+          <rect x="380" y="180" width="60" height="20" rx="10" fill="#BDF75C" opacity="0.18"/>
+          <rect x="392" y="186" width="36" height="8" rx="4" fill="#BDF75C" opacity="0.9"/>
+          <rect x="128" y="216" width="150" height="14" rx="4" fill="#7E92A1" opacity="0.5"/>
+          <rect x="128" y="236" width="190" height="26" rx="6" fill="#F2F7EE" opacity="0.92"/>
+          <g>
+            <rect x="128" y="330" width="22" height="50" rx="5" fill="url(#barGrad)" opacity="0.55"/>
+            <rect x="160" y="305" width="22" height="75" rx="5" fill="url(#barGrad)" opacity="0.7"/>
+            <rect x="192" y="285" width="22" height="95" rx="5" fill="url(#barGrad)" opacity="0.85"/>
+            <rect x="224" y="260" width="22" height="120" rx="5" fill="url(#barGrad)"/>
+            <rect x="256" y="295" width="22" height="85" rx="5" fill="url(#barGrad)" opacity="0.75"/>
+          </g>
+          <path d="M128 360 L165 320 L200 335 L232 270 L268 300 L320 245 L380 215" fill="none" stroke="url(#lineGrad)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="380" cy="215" r="6" fill="#BDF75C"/>
+          <circle cx="380" cy="215" r="11" fill="none" stroke="#BDF75C" stroke-width="2" opacity="0.4"/>
+        </g>
+        <g filter="url(#softShadow)" transform="translate(330,400)">
+          <rect width="170" height="92" rx="20" fill="#0F2638" stroke="#1C3A52" stroke-width="1.5"/>
+          <rect x="18" y="18" width="80" height="10" rx="5" fill="#CFE3D8" opacity="0.5"/>
+          <rect x="18" y="36" width="50" height="16" rx="5" fill="#F2F7EE" opacity="0.92"/>
+          <rect x="18" y="66" width="134" height="8" rx="4" fill="#1C3A52"/>
+          <rect x="18" y="66" width="92" height="8" rx="4" fill="#BDF75C"/>
+        </g>
+      </svg>
+    </div>
+  </aside>
+
+  <!-- form panel -->
+  <main class="auth-form-panel">
+    <div class="auth-card">
+      <header class="auth-card__header">
+        <div class="auth-card__logo" id="cardLogo"></div>
+        <h1 class="auth-card__title">Welcome back</h1>
+        <p class="auth-card__sub">Sign in to your account to continue.</p>
+      </header>
+
+      <form id="loginForm" novalidate>
+        <div class="field" id="emailField">
+          <label for="email">Email address</label>
+          <input type="email" id="email" name="email" autocomplete="email" placeholder="Enter Your Email Address" required aria-describedby="emailErr">
+          <span class="field-error" id="emailErr" role="alert"></span>
+        </div>
+
+        <div class="field" id="pwField">
+          <label for="password">Password</label>
+          <div class="pw-wrap">
+            <input type="password" id="password" name="password" autocomplete="current-password" placeholder="Enter Your Password" required aria-describedby="pwErr">
+            <button type="button" class="pw-toggle" id="pwToggle" aria-label="Show password" aria-pressed="false"><i data-lucide="eye"></i></button>
+          </div>
+          <span class="field-error" id="pwErr" role="alert"></span>
+        </div>
+
+        <div style="text-align:right;margin-top:-0.75rem;margin-bottom:1.25rem;">
+          <a href="forgot-password.html" style="font-size:var(--fs-xs);color:var(--info);font-weight:600;">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="btn btn--accent btn--block" id="loginBtn">Sign in</button>
+      </form>
+
+      <div class="demo-code" id="demoInfo" style="display:none;"></div>
+
+      <p class="auth-card__footer">
+        Don't have an account? <a href="register.html">Create one — it's free</a>
+      </p>
+    </div>
+  </main>
+</div>
+
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="../js/storage.js"></script>
+<script src="../js/app.js"></script>
+<script>
+(function () {
+  // Redirect if already logged in
+  Auth.redirectIfLoggedIn();
+
+  // Apply saved theme even on auth pages
+  const prefs = { theme: localStorage.getItem('mf_last_theme') || 'light' };
+  document.documentElement.setAttribute('data-theme', prefs.theme);
+
+  // Brand mark (rendered via JS so app.js's logoMark stays the single source of truth)
+  document.getElementById('promoLogo').innerHTML = `<span class="logo-mark">${logoMark(30)}</span> MoneyFlow`;
+  document.getElementById('cardLogo').innerHTML = `<span class="logo-mark">${logoMark(26)}</span> MoneyFlow`;
+
+  // Password visibility toggle
+  const pwInput = document.getElementById('password');
+  const pwToggle = document.getElementById('pwToggle');
+  pwToggle.addEventListener('click', () => {
+    const show = pwInput.type === 'password';
+    pwInput.type = show ? 'text' : 'password';
+    pwToggle.setAttribute('aria-pressed', String(show));
+    pwToggle.innerHTML = `<i data-lucide="${show ? 'eye-off' : 'eye'}"></i>`;
+    refreshIcons();
+  });
+
+  // Seed a demo account if no accounts exist
+  const users = DB.getUsers();
+  if (users.length === 0) {
+    const demoInfo = document.getElementById('demoInfo');
+    demoInfo.style.display = 'block';
+    demoInfo.textContent = 'No account yet? Use register.html or click "Create one" below.';
+  }
+
+  // Form submit
+  const form = document.getElementById('loginForm');
+  const btn = document.getElementById('loginBtn');
+
+  function setErr(fieldId, errId, msg) {
+    const field = document.getElementById(fieldId);
+    const err = document.getElementById(errId);
+    field.classList.toggle('has-error', !!msg);
+    err.textContent = msg;
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    setErr('emailField', 'emailErr', '');
+    setErr('pwField', 'pwErr', '');
+
+    const email = form.email.value.trim();
+    const password = form.password.value;
+
+    if (!email) return setErr('emailField', 'emailErr', 'Email is required.');
+    if (!/\S+@\S+\.\S+/.test(email)) return setErr('emailField', 'emailErr', 'Enter a valid email address.');
+    if (!password) return setErr('pwField', 'pwErr', 'Password is required.');
+
+    btn.disabled = true;
+    btn.textContent = 'Signing in…';
+
+    try {
+      const user = DB.findUserByEmail(email);
+      if (!user) {
+        setErr('emailField', 'emailErr', 'No account found with this email.');
+        return;
+      }
+      const ok = await DB.verifyPassword(user, password);
+      if (!ok) {
+        setErr('pwField', 'pwErr', 'Incorrect password. Try again.');
+        return;
+      }
+      const prefs = DB.getPrefs(user.id);
+      localStorage.setItem('mf_last_theme', prefs.theme || 'light');
+      DB.setSession(user.id);
+      window.location.href = 'dashboard.html';
+    } catch (err) {
+      Toast.error('Something went wrong. Please try again.');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Sign in';
+    }
+  });
+
+  refreshIcons();
+})();
+</script>
+</body>
+</html>

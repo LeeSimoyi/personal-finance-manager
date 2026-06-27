@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Investments — MoneyFlow</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
+  <link rel="manifest" href="../site.webmanifest">
+  <meta name="theme-color" content="#071724">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+<div data-app-shell></div>
+<main class="app-main" id="main-content">
+  <div class="container">
+    <div class="page-head">
+      <div>
+        <p class="eyebrow">Portfolio</p>
+        <h1>Investment Tracker</h1>
+        <p>Track stocks, ETFs, crypto and mutual funds with real P&amp;L.</p>
+      </div>
+      <button class="btn btn--primary" id="btnAddInv"><i data-lucide="plus"></i> Add Investment</button>
+    </div>
+
+    <!-- KPI strip -->
+    <div class="stats-grid" id="invSummary" style="margin-bottom:var(--space-6);"></div>
+
+    <!-- Chart + Holdings -->
+    <div class="chart-row" style="margin-bottom:var(--space-6);">
+      <div class="card chart-half">
+        <h3 style="font-size:var(--fs-sm);margin-bottom:var(--space-3);">Portfolio Allocation</h3>
+        <div class="chart-canvas-wrap"><canvas id="allocChart" aria-label="Portfolio allocation" role="img"></canvas></div>
+      </div>
+      <div class="card chart-half">
+        <h3 style="font-size:var(--fs-sm);margin-bottom:var(--space-3);">P&amp;L by Asset</h3>
+        <div class="chart-canvas-wrap"><canvas id="plChart" aria-label="Profit and loss by asset" role="img"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Holdings grid -->
+    <div class="section__head"><h2>Holdings</h2></div>
+    <div class="grid-2" id="holdingsGrid"></div>
+  </div>
+</main>
+
+<!-- ADD/EDIT MODAL -->
+<div class="modal" id="invModal" role="dialog" aria-modal="true" aria-labelledby="invModalTitle" aria-hidden="true">
+  <div class="modal__panel">
+    <div class="modal__head">
+      <h2 id="invModalTitle" style="font-size:var(--fs-lg);margin:0;">Add Investment</h2>
+      <button class="modal__close" data-modal-close><i data-lucide="x"></i></button>
+    </div>
+    <div class="modal__body">
+      <form id="invForm" novalidate>
+        <input type="hidden" id="invId">
+        <div class="input-group">
+          <div class="field" style="flex:2">
+            <label for="invName">Name</label>
+            <input type="text" id="invName" placeholder="e.g. Apple Inc." required>
+          </div>
+          <div class="field" style="flex:1">
+            <label for="invTicker">Ticker / Symbol</label>
+            <input type="text" id="invTicker" placeholder="AAPL" style="text-transform:uppercase;">
+          </div>
+        </div>
+        <div class="field">
+          <label for="invType">Asset type</label>
+          <select id="invType">
+            <option value="stock">Stock</option>
+            <option value="etf">ETF</option>
+            <option value="crypto">Crypto</option>
+            <option value="mutual-fund">Mutual Fund</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <div class="field">
+            <label for="invShares">Shares / Units</label>
+            <input type="number" id="invShares" min="0" step="any" placeholder="0" required>
+          </div>
+          <div class="field">
+            <label for="invPurchasePrice">Purchase price (per unit)</label>
+            <input type="number" id="invPurchasePrice" min="0" step="any" placeholder="0.00" required>
+          </div>
+        </div>
+        <div class="input-group">
+          <div class="field">
+            <label for="invCurrentPrice">Current price (per unit)</label>
+            <input type="number" id="invCurrentPrice" min="0" step="any" placeholder="0.00" required>
+          </div>
+          <div class="field">
+            <label for="invPurchaseDate">Purchase date</label>
+            <input type="date" id="invPurchaseDate">
+          </div>
+        </div>
+        <div class="field">
+          <label for="invNotes">Notes (optional)</label>
+          <input type="text" id="invNotes" placeholder="Broker, account…">
+        </div>
+        <div style="display:flex;gap:var(--space-3);margin-top:var(--space-5);">
+          <button type="button" class="btn btn--ghost btn--block" data-modal-close>Cancel</button>
+          <button type="submit" class="btn btn--accent btn--block">Save investment</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE CONFIRM -->
+<div class="modal" id="invDeleteModal" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modal__panel" style="max-width:360px;">
+    <div class="modal__head">
+      <h2 style="font-size:var(--fs-lg);margin:0;">Remove investment?</h2>
+      <button class="modal__close" data-modal-close><i data-lucide="x"></i></button>
+    </div>
+    <div class="modal__body">
+      <p>This removes it from your tracker only.</p>
+      <div style="display:flex;gap:var(--space-3);">
+        <button class="btn btn--ghost btn--block" data-modal-close>Cancel</button>
+        <button class="btn btn--danger btn--block" id="invDeleteConfirm">Remove</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+<script src="../js/storage.js"></script>
+<script src="../js/app.js"></script>
+<script src="../js/command-palette.js"></script>
+<script src="../js/achievements.js"></script>
+<script src="../js/notifications-engine.js"></script>
+<script>
+(function(){
+  initApp('investments.html');
+  const user = Auth.user;
+  if (!user) return;
+  const currency = Auth.prefs.currency || 'USD';
+  let pendingDeleteId = null;
+  let allocChartInst = null, plChartInst = null;
+
+  const PALETTE = ['#BDF75C','#5B6EF5','#E0455A','#3DDC97','#FFB648','#7C8CF8','#4FC3E8','#C792EA'];
+  const TYPE_ICONS = { stock:'trending-up', etf:'layers', crypto:'bitcoin', 'mutual-fund':'briefcase', other:'bar-chart-2' };
+  const isDark = () => document.documentElement.getAttribute('data-theme') === 'dark';
+  const gridColor = () => isDark() ? 'rgba(255,255,255,0.07)' : 'rgba(7,23,36,0.07)';
+  const textColor = () => isDark() ? '#A9B4C0' : '#5B6470';
+
+  Chart.defaults.font.family = "'IBM Plex Mono', monospace";
+  Chart.defaults.animation = { duration: 600 };
+
+  function render() {
+    const invs = DB.getInvestments(user.id);
+    const totalValue = invs.reduce((s,i) => s + DB.investmentValue(i), 0);
+    const totalCost  = invs.reduce((s,i) => s + (i.purchasePriceUSD||0)*(i.shares||0), 0);
+    const totalPL    = totalValue - totalCost;
+    const totalPLPct = totalCost > 0 ? (totalPL/totalCost)*100 : 0;
+
+    document.getElementById('invSummary').innerHTML = [
+      { icon:'wallet',       bg:'var(--info-bg)',      bar:'var(--info)',     label:'Portfolio Value', value: fmt(totalValue) },
+      { icon:'receipt',      bg:'var(--positive-bg)',  bar:'var(--positive)', label:'Total Cost',      value: fmt(totalCost) },
+      { icon:'trending-up',  bg: totalPL >= 0 ? 'var(--positive-bg)' : 'var(--negative-bg)', bar: totalPL >= 0 ? 'var(--positive)' : 'var(--negative)', label:'Total P&L', value: `${totalPL >= 0 ? '+' : ''}${fmt(totalPL)} (${totalPLPct.toFixed(1)}%)` },
+      { icon:'layers',       bg:'var(--bg-elevated)',  bar:'var(--ink-faint)', label:'Holdings',       value: invs.length },
+    ].map(k => `<div class="stat-card" style="--bar-color:${k.bar};--icon-bg:${k.bg}">
+      <div class="stat-card__accent-bar"></div>
+      <div class="stat-card__icon">${icon(k.icon,'icon-md')}</div>
+      <div class="stat-card__label">${k.label}</div>
+      <div class="stat-card__value mono ${k.label==='Total P&L'?(totalPL>=0?'amount-pos':'amount-neg'):''}">${k.value}</div>
+    </div>`).join('');
+
+    // Charts
+    if (allocChartInst) { allocChartInst.destroy(); allocChartInst = null; }
+    if (plChartInst)    { plChartInst.destroy(); plChartInst = null; }
+
+    if (invs.length > 0) {
+      allocChartInst = new Chart(document.getElementById('allocChart'), {
+        type: 'doughnut',
+        data: {
+          labels: invs.map(i => i.ticker || i.name),
+          datasets: [{ data: invs.map(i => DB.investmentValue(i)), backgroundColor: PALETTE.slice(0, invs.length), borderWidth: 2, borderColor: isDark() ? '#13212F' : '#fff', hoverOffset: 6 }]
+        },
+        options: { responsive:true, maintainAspectRatio:false, cutout:'62%',
+          plugins: { legend:{ position:'right', labels:{ color:textColor(), boxWidth:12, padding:10, font:{size:11} } },
+            tooltip:{ callbacks:{ label: ctx => ` ${ctx.label}: ${fmt(ctx.raw)}` } } } }
+      });
+
+      const plData = invs.map(i => { const r = DB.investmentPL(i); return r.pl; });
+      plChartInst = new Chart(document.getElementById('plChart'), {
+        type: 'bar',
+        data: {
+          labels: invs.map(i => i.ticker || i.name),
+          datasets: [{ label:'P&L', data: plData,
+            backgroundColor: plData.map(v => v >= 0 ? 'rgba(159,230,58,0.8)' : 'rgba(224,69,90,0.75)'), borderRadius: 4 }]
+        },
+        options: { responsive:true, maintainAspectRatio:false, indexAxis:'y',
+          scales: { x:{ grid:{color:gridColor()}, ticks:{color:textColor(), callback:v=>fmt(v)} }, y:{ grid:{display:false}, ticks:{color:textColor()} } },
+          plugins: { legend:{display:false}, tooltip:{ callbacks:{ label: ctx => ` ${fmt(ctx.raw)}` } } } }
+      });
+    }
+
+    // Holdings grid
+    const grid = document.getElementById('holdingsGrid');
+    if (invs.length === 0) {
+      grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-state__icon">${icon('trending-up','icon-xl')}</div><h3>No investments yet</h3><p>Add your stocks, ETFs, crypto or mutual funds.</p></div>`;
+      refreshIcons(); return;
+    }
+    grid.innerHTML = invs.map((inv, idx) => {
+      const { value, cost, pl, plPct } = DB.investmentPL(inv);
+      const isPos = pl >= 0;
+      const catIcon = TYPE_ICONS[inv.type] || 'bar-chart-2';
+      const color = PALETTE[idx % PALETTE.length];
+      return `<div class="investment-card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:var(--space-3);">
+          <div style="display:flex;gap:var(--space-3);align-items:center;">
+            <div style="width:42px;height:42px;border-radius:var(--radius-sm);background:${color}22;color:${color};display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.9rem;font-family:var(--font-mono);">${inv.ticker ? inv.ticker.slice(0,3) : icon(catIcon,'icon-sm')}</div>
+            <div>
+              <div class="investment-card__ticker">${inv.ticker || inv.type.toUpperCase()}</div>
+              <div class="investment-card__name">${inv.name}</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:var(--space-2);">
+            <button class="btn btn--ghost btn--sm" onclick="editInv('${inv.id}')">${icon('pencil','icon-xs')}</button>
+            <button class="btn btn--danger btn--sm" onclick="deleteInv('${inv.id}')">${icon('trash-2','icon-xs')}</button>
+          </div>
+        </div>
+        <div class="investment-card__value ${isPos?'amount-pos':'amount-neg'}">${fmt(value)}</div>
+        <div class="investment-card__pl ${isPos?'pl-positive':'pl-negative'}">
+          ${isPos?'+':''}${fmt(pl)} (${isPos?'+':''}${plPct.toFixed(2)}%)
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:var(--fs-xs);color:var(--ink-faint);margin-top:var(--space-3);">
+          <span>${inv.shares} units @ ${fmt(inv.purchasePriceUSD)}</span>
+          <span>Now: ${fmt(inv.currentPriceUSD)}</span>
+        </div>
+      </div>`;
+    }).join('');
+    refreshIcons();
+    AchievementsEngine.check(user.id);
+  }
+
+  document.getElementById('btnAddInv').addEventListener('click', () => openModal());
+
+  function openModal(inv = null) {
+    document.getElementById('invModalTitle').textContent = inv ? 'Edit Investment' : 'Add Investment';
+    document.getElementById('invId').value = inv ? inv.id : '';
+    document.getElementById('invName').value = inv ? inv.name : '';
+    document.getElementById('invTicker').value = inv ? (inv.ticker || '') : '';
+    document.getElementById('invType').value = inv ? inv.type : 'stock';
+    document.getElementById('invShares').value = inv ? inv.shares : '';
+    document.getElementById('invPurchasePrice').value = inv ? convertFromUSD(inv.purchasePriceUSD, currency).toFixed(4) : '';
+    document.getElementById('invCurrentPrice').value = inv ? convertFromUSD(inv.currentPriceUSD, currency).toFixed(4) : '';
+    document.getElementById('invPurchaseDate').value = inv ? (inv.purchaseDate || '') : '';
+    document.getElementById('invNotes').value = inv ? (inv.notes || '') : '';
+    Modal.open('invModal');
+  }
+
+  window.editInv = (id) => { const inv = DB.getInvestments(user.id).find(i => i.id === id); if (inv) openModal(inv); };
+  window.deleteInv = (id) => { pendingDeleteId = id; Modal.open('invDeleteModal'); };
+
+  document.getElementById('invForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const id = document.getElementById('invId').value;
+    const name = document.getElementById('invName').value.trim();
+    const shares = parseFloat(document.getElementById('invShares').value);
+    const purchasePrice = parseFloat(document.getElementById('invPurchasePrice').value);
+    const currentPrice = parseFloat(document.getElementById('invCurrentPrice').value);
+    if (!name || isNaN(shares) || shares <= 0 || isNaN(purchasePrice) || isNaN(currentPrice)) {
+      Toast.error('Fill in name, shares and prices.'); return;
+    }
+    const data = {
+      userId: user.id, name,
+      ticker: document.getElementById('invTicker').value.trim().toUpperCase() || null,
+      type: document.getElementById('invType').value,
+      shares, purchasePriceUSD: convertToUSD(purchasePrice, currency),
+      currentPriceUSD: convertToUSD(currentPrice, currency),
+      purchaseDate: document.getElementById('invPurchaseDate').value || null,
+      notes: document.getElementById('invNotes').value.trim() || null,
+    };
+    if (id) { DB.updateInvestment(id, data); Toast.success('Investment updated.'); }
+    else    { DB.addInvestment(data); Toast.success('Investment added.'); }
+    Modal.close('invModal');
+    render();
+  });
+
+  document.getElementById('invDeleteConfirm').addEventListener('click', () => {
+    if (!pendingDeleteId) return;
+    DB.deleteInvestment(pendingDeleteId);
+    pendingDeleteId = null;
+    Modal.close('invDeleteModal');
+    Toast.success('Investment removed.');
+    render();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

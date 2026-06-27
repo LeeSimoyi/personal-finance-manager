@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Budgets &amp; Goals — MoneyFlow</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/icons/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../assets/icons/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../assets/icons/apple-touch-icon.png">
+  <link rel="manifest" href="../site.webmanifest">
+  <meta name="theme-color" content="#071724">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+<div data-app-shell></div>
+<main class="app-main" id="main-content">
+  <div class="container">
+
+    <div class="page-head">
+      <div>
+        <p class="eyebrow">Planning</p>
+        <h1>Budgets &amp; Goals</h1>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs" role="tablist" aria-label="Budget sections">
+      <button class="tab-btn is-active" role="tab" aria-selected="true" aria-controls="tab-budget" id="tabBudget"><i data-lucide="wallet"></i> Monthly Budget</button>
+      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-categories" id="tabCat"><i data-lucide="layout-grid"></i> Category Budgets</button>
+      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-goals" id="tabGoals"><i data-lucide="target"></i> Savings Goals</button>
+      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-recurring" id="tabRecurring"><i data-lucide="repeat"></i> Recurring</button>
+    </div>
+
+    <!-- TAB: MONTHLY BUDGET -->
+    <div class="tab-panel is-active" id="tab-budget" role="tabpanel" aria-labelledby="tabBudget">
+      <div class="grid-2">
+        <div class="card">
+          <h2 style="font-size:var(--fs-md);margin-bottom:var(--space-4);">Set Monthly Budget</h2>
+          <form id="monthlyBudgetForm">
+            <div class="field">
+              <label for="monthlyLimit">Monthly spending limit</label>
+              <input type="number" id="monthlyLimit" min="1" step="0.01" placeholder="e.g. 2500.00">
+              <span class="field-hint">All amounts in <span id="currencyLabel">USD</span></span>
+            </div>
+            <button type="submit" class="btn btn--accent">Save budget</button>
+          </form>
+        </div>
+        <div class="card" id="monthlyBudgetStatus"></div>
+      </div>
+    </div>
+
+    <!-- TAB: CATEGORY BUDGETS -->
+    <div class="tab-panel" id="tab-categories" role="tabpanel" aria-labelledby="tabCat">
+      <div style="display:flex;justify-content:flex-end;margin-bottom:var(--space-4);">
+        <button class="btn btn--primary" id="btnAddCatBudget"><i data-lucide="plus"></i> Add category budget</button>
+      </div>
+      <div class="grid-2" id="catBudgetGrid"></div>
+    </div>
+
+    <!-- TAB: SAVINGS GOALS -->
+    <div class="tab-panel" id="tab-goals" role="tabpanel" aria-labelledby="tabGoals">
+      <div style="display:flex;justify-content:flex-end;margin-bottom:var(--space-4);">
+        <button class="btn btn--primary" id="btnAddGoal"><i data-lucide="plus"></i> New goal</button>
+      </div>
+      <div class="grid-2" id="goalsGrid"></div>
+    </div>
+
+    <!-- TAB: RECURRING -->
+    <div class="tab-panel" id="tab-recurring" role="tabpanel" aria-labelledby="tabRecurring">
+      <div style="display:flex;justify-content:flex-end;margin-bottom:var(--space-4);">
+        <button class="btn btn--primary" id="btnAddRecurring"><i data-lucide="plus"></i> Add recurring</button>
+      </div>
+      <div class="card" style="padding:0;" id="recurringWrap">
+        <div class="table-wrap" style="border:none;">
+          <table id="recurringTable" aria-label="Recurring transactions">
+            <thead>
+              <tr>
+                <th>Type</th><th>Category</th><th>Amount</th>
+                <th>Frequency</th><th>Next Due</th><th>Status</th><th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="recurringBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- CATEGORY BUDGET MODAL -->
+<div class="modal" id="catBudgetModal" role="dialog" aria-modal="true" aria-labelledby="catBudgetTitle" aria-hidden="true">
+  <div class="modal__panel">
+    <div class="modal__head">
+      <h2 id="catBudgetTitle" style="font-size:var(--fs-lg);margin:0;">Category Budget</h2>
+      <button class="modal__close" data-modal-close aria-label="Close"><i data-lucide="x"></i></button>
+    </div>
+    <div class="modal__body">
+    <form id="catBudgetForm">
+      <input type="hidden" id="catBudgetId">
+      <div class="field">
+        <label for="catBudgetCategory">Category</label>
+        <select id="catBudgetCategory" required></select>
+      </div>
+      <div class="field">
+        <label for="catBudgetLimit">Monthly limit</label>
+        <input type="number" id="catBudgetLimit" min="1" step="0.01" placeholder="0.00" required>
+      </div>
+      <div style="display:flex;gap:var(--space-3);margin-top:var(--space-5);">
+        <button type="button" class="btn btn--ghost btn--block" data-modal-close>Cancel</button>
+        <button type="submit" class="btn btn--accent btn--block">Save</button>
+      </div>
+    </form>
+    </div>
+  </div>
+</div>
+
+<!-- GOAL MODAL -->
+<div class="modal" id="goalModal" role="dialog" aria-modal="true" aria-labelledby="goalModalTitle" aria-hidden="true">
+  <div class="modal__panel">
+    <div class="modal__head">
+      <h2 id="goalModalTitle" style="font-size:var(--fs-lg);margin:0;">Savings Goal</h2>
+      <button class="modal__close" data-modal-close aria-label="Close"><i data-lucide="x"></i></button>
+    </div>
+    <div class="modal__body">
+    <form id="goalForm">
+      <input type="hidden" id="goalId">
+      <div class="field">
+        <label for="goalName">Goal name</label>
+        <input type="text" id="goalName" placeholder="e.g. Emergency Fund" required>
+      </div>
+      <div class="input-group">
+        <div class="field">
+          <label for="goalTarget">Target amount</label>
+          <input type="number" id="goalTarget" min="1" step="0.01" placeholder="0.00" required>
+        </div>
+        <div class="field">
+          <label for="goalCurrent">Saved so far</label>
+          <input type="number" id="goalCurrent" min="0" step="0.01" placeholder="0.00">
+        </div>
+      </div>
+      <div class="field">
+        <label for="goalDeadline">Target date (optional)</label>
+        <input type="date" id="goalDeadline">
+      </div>
+      <div style="display:flex;gap:var(--space-3);margin-top:var(--space-5);">
+        <button type="button" class="btn btn--ghost btn--block" data-modal-close>Cancel</button>
+        <button type="submit" class="btn btn--accent btn--block">Save goal</button>
+      </div>
+    </form>
+    </div>
+  </div>
+</div>
+
+<!-- RECURRING MODAL -->
+<div class="modal" id="recurringModal" role="dialog" aria-modal="true" aria-labelledby="recurringModalTitle" aria-hidden="true">
+  <div class="modal__panel">
+    <div class="modal__head">
+      <h2 id="recurringModalTitle" style="font-size:var(--fs-lg);margin:0;">Recurring Transaction</h2>
+      <button class="modal__close" data-modal-close aria-label="Close"><i data-lucide="x"></i></button>
+    </div>
+    <div class="modal__body">
+    <form id="recurringForm">
+      <input type="hidden" id="recurringId">
+      <div class="field">
+        <label for="recType">Type</label>
+        <select id="recType"><option value="income">Income</option><option value="expense">Expense</option></select>
+      </div>
+      <div class="field">
+        <label for="recCategory">Category</label>
+        <select id="recCategory"></select>
+      </div>
+      <div class="input-group">
+        <div class="field">
+          <label for="recAmount">Amount</label>
+          <input type="number" id="recAmount" min="0.01" step="0.01" placeholder="0.00" required>
+        </div>
+        <div class="field">
+          <label for="recFrequency">Frequency</label>
+          <select id="recFrequency"><option value="monthly">Monthly</option><option value="weekly">Weekly</option></select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="recNextDate">First / next date</label>
+        <input type="date" id="recNextDate" required>
+      </div>
+      <div class="field">
+        <label for="recNote">Note (optional)</label>
+        <input type="text" id="recNote" placeholder="e.g. Monthly rent">
+      </div>
+      <div style="display:flex;gap:var(--space-3);margin-top:var(--space-5);">
+        <button type="button" class="btn btn--ghost btn--block" data-modal-close>Cancel</button>
+        <button type="submit" class="btn btn--accent btn--block">Save</button>
+      </div>
+    </form>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE CONFIRM -->
+<div class="modal" id="deleteModal" role="dialog" aria-modal="true" aria-labelledby="deleteConfirmTitle" aria-hidden="true">
+  <div class="modal__panel" style="max-width:360px;">
+    <div class="modal__head">
+      <h2 id="deleteConfirmTitle" style="font-size:var(--fs-lg);margin:0;">Confirm delete</h2>
+      <button class="modal__close" data-modal-close aria-label="Close"><i data-lucide="x"></i></button>
+    </div>
+    <div class="modal__body">
+      <p id="deleteConfirmMsg">This action cannot be undone.</p>
+      <div style="display:flex;gap:var(--space-3);">
+        <button class="btn btn--ghost btn--block" data-modal-close>Cancel</button>
+        <button class="btn btn--danger btn--block" id="confirmDeleteBtn">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="../js/command-palette.js"></script>
+<script src="../js/achievements.js"></script>
+<script src="../js/notifications-engine.js"></script>
+<script src="../js/storage.js"></script>
+<script src="../js/app.js"></script>
+<script src="../js/budget.js"></script>
+</body>
+</html>

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calendar — MoneyFlow</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
+  <link rel="manifest" href="../site.webmanifest">
+  <meta name="theme-color" content="#071724">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <style>
+    .cal-nav { display:flex; align-items:center; justify-content:space-between; margin-bottom:var(--space-5); flex-wrap:wrap; gap:var(--space-3); }
+    .cal-month-label { font-family:var(--font-display); font-size:var(--fs-lg); font-weight:600; }
+    .cal-nav-btns { display:flex; gap:var(--space-2); }
+    .cal-legend { display:flex; gap:var(--space-4); flex-wrap:wrap; margin-bottom:var(--space-4); }
+    .cal-legend-item { display:flex; align-items:center; gap:6px; font-size:var(--fs-xs); color:var(--ink-soft); }
+    .cal-legend-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+
+    .cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; }
+    .cal-day-label { text-align:center; font-size:var(--fs-2xs); font-weight:700; text-transform:uppercase; color:var(--ink-faint); padding:var(--space-2) 0; letter-spacing:.06em; }
+    .cal-day { min-height:88px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm); padding:6px; cursor:pointer; transition:border-color var(--transition),box-shadow var(--transition); position:relative; }
+    .cal-day:hover { border-color:var(--accent); box-shadow:var(--shadow-sm); }
+    .cal-day.is-today { border-color:var(--accent-strong); background:var(--positive-bg); }
+    .cal-day.is-today .cal-day__num { background:var(--accent); color:var(--accent-ink); width:22px; height:22px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:var(--fs-xs); }
+    .cal-day.is-other-month { background:var(--bg-elevated); opacity:.5; pointer-events:none; }
+    .cal-day__num { font-size:var(--fs-xs); font-weight:700; color:var(--ink-soft); margin-bottom:3px; }
+    .cal-day__events { display:flex; flex-direction:column; gap:2px; }
+    .cal-event { font-size:0.6rem; font-weight:600; padding:1px 4px; border-radius:3px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:100%; }
+    .cal-event--income      { background:var(--positive-bg); color:var(--positive); }
+    .cal-event--expense     { background:var(--negative-bg); color:var(--negative); }
+    .cal-event--bill        { background:rgba(212,160,23,0.18); color:#B8860F; }
+    .cal-event--recurring   { background:var(--info-bg); color:var(--info); }
+    .cal-event--goal        { background:rgba(155,134,224,0.18); color:#7B5EA7; }
+    .cal-event--more        { background:var(--bg-elevated); color:var(--ink-faint); }
+    .cal-day__total { font-size:0.6rem; font-family:var(--font-mono); font-weight:700; position:absolute; bottom:4px; right:6px; }
+    .cal-day__total.pos { color:var(--positive); }
+    .cal-day__total.neg { color:var(--negative); }
+
+    /* Day detail panel */
+    .day-detail { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:var(--space-5); min-height:220px; }
+    .day-detail__title { font-family:var(--font-display); font-size:var(--fs-md); font-weight:600; margin-bottom:var(--space-4); }
+    .day-detail__item { display:flex; align-items:center; gap:var(--space-3); padding:var(--space-3) 0; border-bottom:1px solid var(--border); font-size:var(--fs-sm); }
+    .day-detail__item:last-child { border-bottom:none; }
+    .day-detail__icon { width:32px; height:32px; border-radius:var(--radius-sm); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .day-detail__label { flex:1; }
+    .day-detail__amount { font-family:var(--font-mono); font-weight:600; font-size:var(--fs-sm); }
+  </style>
+</head>
+<body>
+<div data-app-shell></div>
+<main class="app-main" id="main-content">
+  <div class="container">
+    <div class="page-head">
+      <div>
+        <p class="eyebrow">Schedule</p>
+        <h1>Financial Calendar</h1>
+        <p>All transactions, bills, goals and recurring payments in one view.</p>
+      </div>
+    </div>
+
+    <!-- Nav + legend -->
+    <div class="cal-nav">
+      <div class="cal-nav-btns">
+        <button class="btn btn--ghost btn--sm" id="prevMonth"><i data-lucide="chevron-left"></i></button>
+        <button class="btn btn--ghost btn--sm" id="todayBtn">Today</button>
+        <button class="btn btn--ghost btn--sm" id="nextMonth"><i data-lucide="chevron-right"></i></button>
+      </div>
+      <div class="cal-month-label" id="calMonthLabel"></div>
+      <div class="cal-legend">
+        <span class="cal-legend-item"><span class="cal-legend-dot" style="background:var(--positive);"></span> Income</span>
+        <span class="cal-legend-item"><span class="cal-legend-dot" style="background:var(--negative);"></span> Expense</span>
+        <span class="cal-legend-item"><span class="cal-legend-dot" style="background:var(--info);"></span> Recurring</span>
+        <span class="cal-legend-item"><span class="cal-legend-dot" style="background:#D4A017;"></span> Bill</span>
+        <span class="cal-legend-item"><span class="cal-legend-dot" style="background:#7B5EA7;"></span> Goal</span>
+      </div>
+    </div>
+
+    <!-- Calendar grid -->
+    <div class="cal-grid" id="calGrid" role="grid" aria-label="Financial calendar"></div>
+
+    <!-- Day detail -->
+    <div style="margin-top:var(--space-5);" id="dayDetailWrap" style="display:none;">
+      <div class="day-detail" id="dayDetail">
+        <div class="day-detail__title">Select a day to see details</div>
+      </div>
+    </div>
+
+    <!-- Month summary -->
+    <div class="grid-2" style="margin-top:var(--space-5);" id="monthSummary"></div>
+  </div>
+</main>
+
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="../js/storage.js"></script>
+<script src="../js/app.js"></script>
+<script src="../js/command-palette.js"></script>
+<script src="../js/achievements.js"></script>
+<script src="../js/notifications-engine.js"></script>
+<script>
+(function(){
+  initApp('calendar.html');
+  const user = Auth.user;
+  if (!user) return;
+
+  let viewYear = new Date().getFullYear();
+  let viewMonth = new Date().getMonth();
+  let selectedDay = null;
+
+  const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+  function buildEventMap() {
+    const txAll = DB.getTransactions(user.id);
+    const recs = DB.getRecurring(user.id);
+    const subs = typeof DB.getSubscriptions === 'function' ? DB.getSubscriptions(user.id) : [];
+    const debts = typeof DB.getDebts === 'function' ? DB.getDebts(user.id) : [];
+    const goals = DB.getGoals(user.id);
+    const map = {};
+
+    function addEvent(dateStr, ev) {
+      if (!map[dateStr]) map[dateStr] = [];
+      map[dateStr].push(ev);
+    }
+
+    // Transactions
+    txAll.forEach(t => {
+      addEvent(t.date, { type: t.type, label: `${t.category}${t.note ? ': '+t.note : ''}`, amount: t.amountUSD, eventType: t.type });
+    });
+
+    // Upcoming recurring
+    recs.filter(r => r.active).forEach(r => {
+      const next = r.nextDate;
+      if (next) addEvent(next, { type:'recurring', label:`${r.category} (recurring)`, amount: r.amountUSD, eventType:'recurring' });
+    });
+
+    // Subscription renewals
+    subs.filter(s => s.active && s.renewalDate).forEach(s => {
+      addEvent(s.renewalDate, { type:'bill', label:`${s.name} renewal`, amount: s.amountUSD, eventType:'bill' });
+    });
+
+    // Debt due dates
+    debts.filter(d => d.dueDate && d.remainingAmountUSD > 0).forEach(d => {
+      addEvent(d.dueDate, { type:'bill', label:`${d.name} payment`, amount: d.monthlyPaymentUSD || 0, eventType:'bill' });
+    });
+
+    // Goal deadlines
+    goals.filter(g => g.deadline).forEach(g => {
+      addEvent(g.deadline, { type:'goal', label:`Goal: ${g.name}`, amount: g.targetUSD - g.currentUSD, eventType:'goal' });
+    });
+
+    return map;
+  }
+
+  function renderCalendar() {
+    const map = buildEventMap();
+    const today = new Date();
+    const firstDay = new Date(viewYear, viewMonth, 1).getDay();
+    const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+    const monthLabel = new Date(viewYear, viewMonth, 1).toLocaleString('default', { month:'long', year:'numeric' });
+    document.getElementById('calMonthLabel').textContent = monthLabel;
+
+    const grid = document.getElementById('calGrid');
+
+    // Day headers
+    let html = DAYS.map(d => `<div class="cal-day-label" role="columnheader">${d}</div>`).join('');
+
+    // Empty leading cells
+    for (let i = 0; i < firstDay; i++) {
+      html += `<div class="cal-day is-other-month" aria-hidden="true"></div>`;
+    }
+
+    // Day cells
+    for (let day = 1; day <= daysInMonth; day++) {
+      const dateStr = `${viewYear}-${String(viewMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+      const events = map[dateStr] || [];
+      const isToday = today.getFullYear()===viewYear && today.getMonth()===viewMonth && today.getDate()===day;
+      const isSelected = selectedDay === dateStr;
+      const MAX_SHOW = 2;
+      const shown = events.slice(0, MAX_SHOW);
+      const more = events.length - MAX_SHOW;
+
+      // Daily net
+      const income = events.filter(e => e.eventType==='income').reduce((s,e) => s+e.amount, 0);
+      const expense = events.filter(e => e.eventType==='expense').reduce((s,e) => s+e.amount, 0);
+      const net = income - expense;
+      const netStr = events.length > 0 && (income > 0 || expense > 0)
+        ? `<div class="cal-day__total ${net>=0?'pos':'neg'}">${net>=0?'+':''}${fmt(Math.abs(net))}</div>` : '';
+
+      html += `<div class="cal-day${isToday?' is-today':''}${isSelected?' is-selected':''}"
+        role="gridcell" aria-label="${dateStr}${isToday?' (today)':''}"
+        data-date="${dateStr}" tabindex="0">
+        <div class="cal-day__num">${day}</div>
+        <div class="cal-day__events">
+          ${shown.map(ev => `<div class="cal-event cal-event--${ev.eventType}" title="${ev.label}">${ev.label}</div>`).join('')}
+          ${more > 0 ? `<div class="cal-event cal-event--more">+${more} more</div>` : ''}
+        </div>
+        ${netStr}
+      </div>`;
+    }
+
+    grid.innerHTML = html;
+    refreshIcons();
+
+    // Click handlers
+    grid.querySelectorAll('.cal-day[data-date]').forEach(el => {
+      el.addEventListener('click', () => showDayDetail(el.getAttribute('data-date'), map));
+      el.addEventListener('keydown', e => { if (e.key==='Enter'||e.key===' ') showDayDetail(el.getAttribute('data-date'), map); });
+    });
+
+    renderMonthSummary(map, daysInMonth);
+  }
+
+  function showDayDetail(dateStr, map) {
+    selectedDay = dateStr;
+    const events = map[dateStr] || [];
+    const detail = document.getElementById('dayDetail');
+    const d = new Date(dateStr + 'T00:00:00');
+    const label = d.toLocaleDateString(undefined, { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+
+    if (events.length === 0) {
+      detail.innerHTML = `<div class="day-detail__title">${label}</div><p style="color:var(--ink-faint);font-size:var(--fs-sm);">No events on this day.</p>`;
+      return;
+    }
+
+    const typeIcon = { income:'trending-up', expense:'trending-down', recurring:'repeat', bill:'file-text', goal:'target' };
+    const typeBg   = { income:'var(--positive-bg)', expense:'var(--negative-bg)', recurring:'var(--info-bg)', bill:'rgba(212,160,23,0.16)', goal:'rgba(155,134,224,0.16)' };
+    const typeColor= { income:'var(--positive)', expense:'var(--negative)', recurring:'var(--info)', bill:'#D4A017', goal:'#7B5EA7' };
+
+    detail.innerHTML = `<div class="day-detail__title">${label} <span style="font-size:var(--fs-sm);color:var(--ink-faint);font-family:var(--font-body);font-weight:400;">(${events.length} event${events.length!==1?'s':''})</span></div>
+      ${events.map(ev => `<div class="day-detail__item">
+        <div class="day-detail__icon" style="background:${typeBg[ev.eventType]||'var(--bg-elevated)'};color:${typeColor[ev.eventType]||'var(--ink-soft)'};">
+          ${icon(typeIcon[ev.eventType]||'circle','icon-sm')}
+        </div>
+        <div class="day-detail__label">${ev.label}</div>
+        <div class="day-detail__amount ${ev.eventType==='income'?'amount-pos':ev.eventType==='expense'?'amount-neg':''}">${fmt(ev.amount)}</div>
+      </div>`).join('')}`;
+
+    document.getElementById('dayDetailWrap').style.display = '';
+    document.getElementById('dayDetail').scrollIntoView({ behavior:'smooth', block:'nearest' });
+    refreshIcons();
+
+    // Re-render to highlight selected
+    renderCalendar();
+  }
+
+  function renderMonthSummary(map, daysInMonth) {
+    const allEvents = [];
+    for (let d=1; d<=daysInMonth; d++) {
+      const ds = `${viewYear}-${String(viewMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      (map[ds]||[]).forEach(e => allEvents.push(e));
+    }
+    const income  = allEvents.filter(e => e.eventType==='income').reduce((s,e)=>s+e.amount,0);
+    const expense = allEvents.filter(e => e.eventType==='expense').reduce((s,e)=>s+e.amount,0);
+    const bills   = allEvents.filter(e => e.eventType==='bill').reduce((s,e)=>s+e.amount,0);
+
+    document.getElementById('monthSummary').innerHTML = `
+      <div class="card">
+        <h3 style="font-size:var(--fs-sm);margin-bottom:var(--space-4);">Month Summary</h3>
+        <div style="display:flex;flex-direction:column;gap:var(--space-3);">
+          <div style="display:flex;justify-content:space-between;font-size:var(--fs-sm);">
+            <span style="display:flex;align-items:center;gap:var(--space-2);">${icon('trending-up','icon-sm')} Income</span>
+            <span class="amount-pos mono">${fmt(income)}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:var(--fs-sm);">
+            <span style="display:flex;align-items:center;gap:var(--space-2);">${icon('trending-down','icon-sm')} Expenses</span>
+            <span class="amount-neg mono">${fmt(expense)}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:var(--fs-sm);">
+            <span style="display:flex;align-items:center;gap:var(--space-2);">${icon('file-text','icon-sm')} Bills / Renewals</span>
+            <span class="mono">${fmt(bills)}</span>
+          </div>
+          <div style="border-top:1px solid var(--border);padding-top:var(--space-3);display:flex;justify-content:space-between;font-weight:700;">
+            <span>Net</span>
+            <span class="${income-expense>=0?'amount-pos':'amount-neg'} mono">${fmt(income-expense)}</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <h3 style="font-size:var(--fs-sm);margin-bottom:var(--space-4);">Upcoming Events</h3>
+        <div style="display:flex;flex-direction:column;gap:var(--space-2);" id="upcomingList">
+          ${buildUpcomingList(map, daysInMonth)}
+        </div>
+      </div>`;
+    refreshIcons();
+  }
+
+  function buildUpcomingList(map, daysInMonth) {
+    const today = new Date();
+    const upcoming = [];
+    for (let d = today.getDate(); d <= Math.min(today.getDate()+14, daysInMonth); d++) {
+      if (today.getMonth() !== viewMonth || today.getFullYear() !== viewYear) break;
+      const ds = `${viewYear}-${String(viewMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      (map[ds]||[]).filter(e => ['bill','recurring','goal'].includes(e.eventType)).forEach(e => {
+        upcoming.push({ date: ds, ...e });
+      });
+    }
+    if (upcoming.length === 0) return '<p style="font-size:var(--fs-sm);color:var(--ink-faint);">No upcoming bills or events in the next 14 days.</p>';
+    return upcoming.slice(0,6).map(ev => `
+      <div style="display:flex;align-items:center;gap:var(--space-3);font-size:var(--fs-sm);">
+        <span style="font-family:var(--font-mono);font-size:var(--fs-xs);color:var(--ink-faint);width:40px;">${new Date(ev.date+'T00:00:00').getDate()}</span>
+        <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${ev.label}</span>
+        <span class="mono" style="font-size:var(--fs-xs);">${fmt(ev.amount)}</span>
+      </div>`).join('');
+  }
+
+  // Navigation
+  document.getElementById('prevMonth').addEventListener('click', () => { viewMonth--; if (viewMonth<0){viewMonth=11;viewYear--;} renderCalendar(); });
+  document.getElementById('nextMonth').addEventListener('click', () => { viewMonth++; if (viewMonth>11){viewMonth=0;viewYear++;} renderCalendar(); });
+  document.getElementById('todayBtn').addEventListener('click', () => { viewYear=new Date().getFullYear(); viewMonth=new Date().getMonth(); renderCalendar(); });
+
+  renderCalendar();
+})();
+</script>
+</body>
+</html>

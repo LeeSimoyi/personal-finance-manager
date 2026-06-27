@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — MoneyFlow</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/icons/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../assets/icons/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../assets/icons/apple-touch-icon.png">
+  <link rel="manifest" href="../site.webmanifest">
+  <meta name="theme-color" content="#071724">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+<div data-app-shell></div>
+
+<main class="app-main" id="main-content">
+  <div class="container">
+
+    <div class="page-head">
+      <div>
+        <p class="eyebrow">Overview</p>
+        <h1 id="greeting">Good morning</h1>
+        <p id="dateDisplay"></p>
+      </div>
+      <div class="quick-actions">
+        <button class="btn btn--primary" id="btnAddIncome"><i data-lucide="plus"></i> Income</button>
+        <button class="btn btn--ghost" id="btnAddExpense"><i data-lucide="plus"></i> Expense</button>
+      </div>
+    </div>
+
+    <!-- NET WORTH HERO -->
+    <section class="section" aria-label="Net worth">
+      <div class="hero-card" id="heroCard">
+        <div class="hero-card__eyebrow">Net Worth</div>
+        <div class="hero-card__amount mono" id="heroNetWorth">—</div>
+        <div class="hero-card__change" id="heroChange"></div>
+        <div class="hero-card__sub-grid" id="heroSubGrid"></div>
+      </div>
+    </section>
+
+    <!-- KPI CARDS -->
+    <section class="section" aria-label="Key metrics">
+      <div class="stats-grid" id="kpiGrid"></div>
+    </section>
+
+    <!-- CHARTS ROW -->
+    <section class="section" aria-label="Spending analytics">
+      <div class="section__head"><h2>Spending Analytics</h2></div>
+      <div class="chart-row">
+        <div class="card chart-half">
+          <h3 style="font-size:var(--fs-sm);margin-bottom:var(--space-3);">Expenses by Category</h3>
+          <div class="chart-canvas-wrap"><canvas id="expensePieChart" aria-label="Expense breakdown by category" role="img"></canvas></div>
+        </div>
+        <div class="card chart-half">
+          <h3 style="font-size:var(--fs-sm);margin-bottom:var(--space-3);">Income vs Expenses (6 mo)</h3>
+          <div class="chart-canvas-wrap"><canvas id="incomeExpenseBar" aria-label="Monthly income versus expenses bar chart" role="img"></canvas></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HEALTH SCORE + INSIGHTS ROW -->
+    <div class="grid-2">
+      <!-- Health Score -->
+      <section class="section" aria-label="Financial health score">
+        <div class="section__head">
+          <h2>Health Score</h2>
+          <a href="financial-health.html" class="btn btn--ghost btn--sm">Details →</a>
+        </div>
+        <div class="card" id="healthScoreCard" style="display:flex;align-items:center;gap:var(--space-5);">
+          <div style="text-align:center;flex-shrink:0;">
+            <svg width="120" height="120" viewBox="0 0 120 120" aria-hidden="true">
+              <circle cx="60" cy="60" r="50" fill="none" stroke="var(--border)" stroke-width="8"/>
+              <circle id="dashHealthRing" cx="60" cy="60" r="50" fill="none" stroke-width="8" stroke-linecap="round"
+                stroke-dasharray="314.16" stroke-dashoffset="314.16"
+                style="transform:rotate(-90deg);transform-origin:50% 50%;transition:stroke-dashoffset 1s ease,stroke .3s;"/>
+            </svg>
+            <div id="dashHealthNum" style="font-family:var(--font-mono);font-size:var(--fs-xl);font-weight:700;margin-top:-var(--space-2);line-height:1;">—</div>
+          </div>
+          <div>
+            <div id="dashHealthGrade" style="font-size:var(--fs-md);font-weight:700;margin-bottom:var(--space-2);">Calculating…</div>
+            <p style="font-size:var(--fs-sm);margin:0;color:var(--ink-soft);">Your overall financial health across savings, budget, debt and goals.</p>
+            <a href="financial-health.html" class="btn btn--ghost btn--sm" style="margin-top:var(--space-3);">View full report</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" aria-label="Financial insights">
+        <div class="section__head"><h2>Smart Insights</h2></div>
+        <div id="insightsList" style="display:flex;flex-direction:column;gap:var(--space-3);"></div>
+      </section>
+    </div>
+
+    <!-- BUDGET + RECENT TX -->
+    <div class="grid-2">
+      <section class="section" aria-label="Budget status">
+        <div class="section__head">
+          <h2>Budget Status</h2>
+          <a href="budgets.html" class="btn btn--ghost btn--sm">Manage →</a>
+        </div>
+        <div class="card">
+          <div id="budgetStatusList"></div>
+        </div>
+      </section>
+
+      <section class="section" aria-label="Recent transactions">
+        <div class="section__head">
+          <h2>Recent Transactions</h2>
+          <a href="transactions.html" class="btn btn--ghost btn--sm">See all →</a>
+        </div>
+        <div class="card" id="recentTxList"></div>
+      </section>
+    </div>
+
+    <!-- GOALS -->
+    <div class="section" aria-label="Savings goals">
+      <div class="section__head">
+        <h2>Savings Goals</h2>
+        <a href="budgets.html#goals" class="btn btn--ghost btn--sm">Manage →</a>
+      </div>
+      <div class="grid-2" id="goalsList"></div>
+    </div>
+
+  </div>
+</main>
+
+<!-- ADD INCOME MODAL -->
+<div class="modal" id="addIncomeModal" role="dialog" aria-modal="true" aria-labelledby="addIncomeTitle" aria-hidden="true">
+  <div class="modal__panel">
+    <div class="modal__head">
+      <h2 id="addIncomeTitle" style="font-size:var(--fs-lg);margin:0;">Add Income</h2>
+      <button class="modal__close" data-modal-close aria-label="Close modal"><i data-lucide="x"></i></button>
+    </div>
+    <div class="modal__body">
+    <form id="incomeForm" novalidate>
+      <div class="field">
+        <label for="inCategory">Category</label>
+        <select id="inCategory" required></select>
+      </div>
+      <div class="input-group">
+        <div class="field" style="flex:2">
+          <label for="inAmount">Amount</label>
+          <input type="number" id="inAmount" min="0.01" step="0.01" placeholder="0.00" required>
+        </div>
+        <div class="field" style="flex:1">
+          <label for="inDate">Date</label>
+          <input type="date" id="inDate" required>
+        </div>
+      </div>
+      <div class="field">
+        <label for="inNote">Note (optional)</label>
+        <input type="text" id="inNote" placeholder="e.g. Monthly salary">
+      </div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="inRecurring">
+        <label for="inRecurring" style="text-transform:none;font-size:var(--fs-sm);color:var(--ink);">Recurring transaction</label>
+      </div>
+      <div id="inRecurringOpts" style="display:none;margin-top:var(--space-3);">
+        <div class="field">
+          <label for="inFrequency">Frequency</label>
+          <select id="inFrequency"><option value="monthly">Monthly</option><option value="weekly">Weekly</option></select>
+        </div>
+      </div>
+      <div style="display:flex;gap:var(--space-3);margin-top:var(--space-5);">
+        <button type="button" class="btn btn--ghost btn--block" data-modal-close>Cancel</button>
+        <button type="submit" class="btn btn--accent btn--block">Save Income</button>
+      </div>
+    </form>
+    </div>
+  </div>
+</div>
+
+<!-- ADD EXPENSE MODAL -->
+<div class="modal" id="addExpenseModal" role="dialog" aria-modal="true" aria-labelledby="addExpenseTitle" aria-hidden="true">
+  <div class="modal__panel">
+    <div class="modal__head">
+      <h2 id="addExpenseTitle" style="font-size:var(--fs-lg);margin:0;">Add Expense</h2>
+      <button class="modal__close" data-modal-close aria-label="Close modal"><i data-lucide="x"></i></button>
+    </div>
+    <div class="modal__body">
+    <form id="expenseForm" novalidate>
+      <div class="field">
+        <label for="exCategory">Category</label>
+        <select id="exCategory" required></select>
+      </div>
+      <div class="input-group">
+        <div class="field" style="flex:2">
+          <label for="exAmount">Amount</label>
+          <input type="number" id="exAmount" min="0.01" step="0.01" placeholder="0.00" required>
+        </div>
+        <div class="field" style="flex:1">
+          <label for="exDate">Date</label>
+          <input type="date" id="exDate" required>
+        </div>
+      </div>
+      <div class="field">
+        <label for="exNote">Note (optional)</label>
+        <input type="text" id="exNote" placeholder="e.g. Grocery shopping">
+      </div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="exRecurring">
+        <label for="exRecurring" style="text-transform:none;font-size:var(--fs-sm);color:var(--ink);">Recurring transaction</label>
+      </div>
+      <div id="exRecurringOpts" style="display:none;margin-top:var(--space-3);">
+        <div class="field">
+          <label for="exFrequency">Frequency</label>
+          <select id="exFrequency"><option value="monthly">Monthly</option><option value="weekly">Weekly</option></select>
+        </div>
+      </div>
+      <div style="display:flex;gap:var(--space-3);margin-top:var(--space-5);">
+        <button type="button" class="btn btn--ghost btn--block" data-modal-close>Cancel</button>
+        <button type="submit" class="btn btn--accent btn--block">Save Expense</button>
+      </div>
+    </form>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+<script src="../js/storage.js"></script>
+<script src="../js/app.js"></script>
+<script src="../js/command-palette.js"></script>
+<script src="../js/achievements.js"></script>
+<script src="../js/notifications-engine.js"></script>
+<script src="../js/dashboard.js"></script>
+</body>
+</html>

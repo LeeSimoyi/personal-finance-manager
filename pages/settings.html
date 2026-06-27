@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings — MoneyFlow</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/icons/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../assets/icons/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../assets/icons/apple-touch-icon.png">
+  <link rel="manifest" href="../site.webmanifest">
+  <meta name="theme-color" content="#071724">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <style>
+    .settings-grid { display:grid; grid-template-columns:1fr; gap:var(--space-5); }
+    @media(min-width:900px){ .settings-grid { grid-template-columns:1fr 1fr; } }
+    .settings-section h2 { font-size:var(--fs-md); margin-bottom:var(--space-4); padding-bottom:var(--space-2); border-bottom:1px solid var(--border); }
+
+    .avatar-picker { display:flex; align-items:center; gap:var(--space-5); margin-bottom:var(--space-4); }
+    .avatar-picker .avatar { width:72px; height:72px; font-size:1.4rem; cursor:pointer; }
+    .avatar-picker label { cursor:pointer; }
+
+    .theme-swatches { display:flex; gap:var(--space-3); flex-wrap:wrap; margin-top:var(--space-3); }
+    .theme-swatch {
+      width:48px; height:48px; border-radius:var(--radius-md); border:2px solid transparent;
+      cursor:pointer; transition:transform var(--transition), border-color var(--transition);
+      display:flex; align-items:center; justify-content:center; font-size:1.2rem;
+    }
+    .theme-swatch:hover { transform:scale(1.1); }
+    .theme-swatch.is-active { border-color:var(--accent); box-shadow:var(--shadow-glow-lime); }
+    .theme-swatch--light { background:#F7F7F7; color:#1A1A1A; border-color:rgba(7,23,36,0.12); }
+    .theme-swatch--dark  { background:#071724; color:#BDF75C; }
+
+    .danger-zone { border-color:var(--negative) !important; }
+    .danger-zone h2 { color:var(--negative); }
+
+    .shortcut-row { display:flex; justify-content:space-between; padding:var(--space-2) 0; border-bottom:1px solid var(--border); font-size:var(--fs-sm); }
+    .shortcut-row:last-child { border:none; }
+    kbd { background:var(--bg-elevated); border:1px solid var(--border-strong); border-radius:4px; padding:2px 6px; font-family:var(--font-mono); font-size:0.8em; }
+  </style>
+</head>
+<body>
+<div data-app-shell></div>
+<main class="app-main" id="main-content">
+  <div class="container">
+
+    <div class="page-head">
+      <div>
+        <p class="eyebrow">Configuration</p>
+        <h1>Settings</h1>
+      </div>
+    </div>
+
+    <div class="settings-grid">
+
+      <!-- Profile -->
+      <div class="card settings-section">
+        <h2>Profile</h2>
+        <div class="avatar-picker">
+          <div class="avatar" id="avatarPreview" title="Click to upload photo"></div>
+          <div>
+            <label for="avatarInput" class="btn btn--ghost btn--sm">Upload photo</label>
+            <input type="file" id="avatarInput" accept="image/*" style="display:none;" aria-label="Upload avatar image">
+            <p style="font-size:var(--fs-xs);margin-top:var(--space-2);">JPG, PNG or GIF up to 2MB. Stored locally.</p>
+          </div>
+        </div>
+        <form id="profileForm">
+          <div class="field">
+            <label for="profileName">Display name</label>
+            <input type="text" id="profileName" required autocomplete="name">
+          </div>
+          <div class="field">
+            <label for="profileEmail">Email address</label>
+            <input type="email" id="profileEmail" required autocomplete="email">
+          </div>
+          <button type="submit" class="btn btn--accent">Save profile</button>
+        </form>
+      </div>
+
+      <!-- Security -->
+      <div class="card settings-section">
+        <h2>Change Password</h2>
+        <form id="passwordForm">
+          <div class="field">
+            <label for="currentPw">Current password</label>
+            <input type="password" id="currentPw" autocomplete="current-password" required>
+          </div>
+          <div class="field">
+            <label for="newPw">New password</label>
+            <input type="password" id="newPw" autocomplete="new-password" required minlength="8">
+          </div>
+          <div class="field">
+            <label for="confirmPw">Confirm new password</label>
+            <input type="password" id="confirmPw" autocomplete="new-password" required>
+          </div>
+          <button type="submit" class="btn btn--accent">Update password</button>
+        </form>
+      </div>
+
+      <!-- Appearance -->
+      <div class="card settings-section">
+        <h2>Appearance</h2>
+        <label style="font-size:var(--fs-xs);text-transform:uppercase;letter-spacing:.07em;color:var(--ink-faint);font-weight:700;">Theme</label>
+        <div class="theme-swatches">
+          <button class="theme-swatch theme-swatch--light" data-theme-pick="light" aria-label="Light theme" title="Light"><i data-lucide="sun"></i></button>
+          <button class="theme-swatch theme-swatch--dark" data-theme-pick="dark" aria-label="Dark theme" title="Dark"><i data-lucide="moon"></i></button>
+        </div>
+
+        <div class="field" style="margin-top:var(--space-5);">
+          <label for="currencyPref">Default currency</label>
+          <select id="currencyPref">
+            <option value="USD">USD — US Dollar ($)</option>
+            <option value="EUR">EUR — Euro (€)</option>
+            <option value="GBP">GBP — British Pound (£)</option>
+            <option value="INR">INR — Indian Rupee (₹)</option>
+            <option value="ZWL">ZWL — Zimbabwe Gold (ZiG)</option>
+          </select>
+        </div>
+
+        <div class="checkbox-row" style="margin-top:var(--space-3);">
+          <input type="checkbox" id="highContrast">
+          <label for="highContrast" style="text-transform:none;font-size:var(--fs-sm);color:var(--ink);">High contrast mode (WCAG AAA)</label>
+        </div>
+
+        <button class="btn btn--ghost" id="saveAppearance" style="margin-top:var(--space-4);">Save appearance</button>
+      </div>
+
+      <!-- Backup / Restore -->
+      <div class="card settings-section">
+        <h2>Data Backup &amp; Restore</h2>
+        <p>Export all your financial data as a JSON backup, or import a previous backup to restore it.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:var(--space-3);margin-bottom:var(--space-5);">
+          <button class="btn btn--primary" id="btnExportBackup"><i data-lucide="download"></i> Export backup</button>
+          <label class="btn btn--ghost" for="importBackupInput" style="cursor:pointer;"><i data-lucide="upload"></i> Import backup</label>
+          <input type="file" id="importBackupInput" accept=".json" style="display:none;" aria-label="Import backup file">
+        </div>
+        <div class="field">
+          <label>Last export</label>
+          <div id="lastExportDate" style="font-size:var(--fs-sm);color:var(--ink-soft);">Never</div>
+        </div>
+      </div>
+
+      <!-- Keyboard shortcuts -->
+      <div class="card settings-section">
+        <h2>Keyboard Shortcuts</h2>
+        <div class="shortcut-row"><span>Navigate to Dashboard</span><span><kbd>Alt</kbd>+<kbd>D</kbd></span></div>
+        <div class="shortcut-row"><span>Navigate to Transactions</span><span><kbd>Alt</kbd>+<kbd>T</kbd></span></div>
+        <div class="shortcut-row"><span>Navigate to Budgets</span><span><kbd>Alt</kbd>+<kbd>B</kbd></span></div>
+        <div class="shortcut-row"><span>Navigate to Reports</span><span><kbd>Alt</kbd>+<kbd>R</kbd></span></div>
+        <div class="shortcut-row"><span>Close modals / overlays</span><span><kbd>Esc</kbd></span></div>
+        <div class="shortcut-row"><span>Toggle dark mode</span><span><kbd>Alt</kbd>+<kbd>M</kbd></span></div>
+      </div>
+
+      <!-- About -->
+      <div class="card settings-section">
+        <h2>About MoneyFlow</h2>
+        <p style="margin-bottom:var(--space-2);">Version 1.0.0</p>
+        <p style="margin-bottom:var(--space-2);">A production-grade personal finance manager. All data lives exclusively in your browser's localStorage — nothing is sent to any server.</p>
+        <p style="margin-bottom:var(--space-2);">Built with HTML5, CSS3, Vanilla JS ES6+ and Chart.js.</p>
+        <div style="display:flex;gap:var(--space-3);flex-wrap:wrap;margin-top:var(--space-3);">
+          <span class="badge badge--info">Chart.js 4.4</span>
+          <span class="badge badge--accent">localStorage</span>
+          <span class="badge badge--positive">Web Crypto API</span>
+          <span class="badge badge--info">WCAG AA</span>
+        </div>
+      </div>
+
+      <!-- Danger zone -->
+      <div class="card danger-zone settings-section">
+        <h2>Danger Zone</h2>
+        <p>Permanently delete all your transactions, budgets, and goals. Your account stays active but all financial data is wiped. This cannot be undone.</p>
+        <button class="btn btn--danger" id="btnWipeData"><i data-lucide="alert-triangle"></i> Wipe all financial data</button>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<!-- WIPE CONFIRM MODAL -->
+<div class="modal" id="wipeModal" role="dialog" aria-modal="true" aria-labelledby="wipeTitle" aria-hidden="true">
+  <div class="modal__panel" style="max-width:400px;">
+    <div class="modal__head">
+      <h2 id="wipeTitle" style="font-size:var(--fs-lg);margin:0;color:var(--negative);">Wipe all data?</h2>
+      <button class="modal__close" data-modal-close aria-label="Close"><i data-lucide="x"></i></button>
+    </div>
+    <div class="modal__body">
+      <p>This will permanently delete <strong>all</strong> your transactions, budgets, and goals. Your account login will remain.</p>
+      <p>Type <strong>DELETE</strong> to confirm:</p>
+      <input type="text" id="wipeConfirmInput" placeholder="Type DELETE" autocomplete="off" style="margin-bottom:var(--space-4);">
+      <div style="display:flex;gap:var(--space-3);">
+        <button class="btn btn--ghost btn--block" data-modal-close>Cancel</button>
+        <button class="btn btn--danger btn--block" id="confirmWipeBtn" disabled>Wipe data</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="../js/command-palette.js"></script>
+<script src="../js/achievements.js"></script>
+<script src="../js/notifications-engine.js"></script>
+<script src="../js/storage.js"></script>
+<script src="../js/app.js"></script>
+<script src="../js/settings.js"></script>
+</body>
+</html>

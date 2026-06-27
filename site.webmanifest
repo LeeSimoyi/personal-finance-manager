@@ -1,0 +1,27 @@
+{
+  "name": "MoneyFlow — Personal Finance Manager",
+  "short_name": "MoneyFlow",
+  "description": "Track income, expenses, budgets, savings goals, investments, debts and more. 100% private — all data stays in your browser.",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#F7F7F7",
+  "theme_color": "#071724",
+  "scope": "/",
+  "categories": ["finance", "productivity"],
+  "icons": [
+    { "src": "assets/icons/favicon-16.png",   "sizes": "16x16",   "type": "image/png" },
+    { "src": "assets/icons/favicon-32.png",   "sizes": "32x32",   "type": "image/png" },
+    { "src": "assets/icons/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "assets/icons/icon-192.png",     "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icons/icon-512.png",     "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "assets/icons/icon-512.png",     "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ],
+  "shortcuts": [
+    { "name": "Dashboard", "short_name": "Dashboard", "description": "Go to Dashboard", "url": "/pages/dashboard.html", "icons": [{ "src": "assets/icons/favicon-32.png", "sizes": "32x32" }] },
+    { "name": "Transactions", "short_name": "Transactions", "description": "View transactions", "url": "/pages/transactions.html", "icons": [{ "src": "assets/icons/favicon-32.png", "sizes": "32x32" }] },
+    { "name": "Budgets & Goals", "short_name": "Budgets", "description": "Manage budgets and goals", "url": "/pages/budgets.html", "icons": [{ "src": "assets/icons/favicon-32.png", "sizes": "32x32" }] }
+  ],
+  "screenshots": [],
+  "prefer_related_applications": false
+}

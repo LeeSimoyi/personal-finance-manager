@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="navyGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0B2235"/>
+      <stop offset="100%" stop-color="#071724"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="16" fill="url(#navyGrad)"/>
+  <!-- ascending flow line -->
+  <path d="M12 40 L24 30 L32 36 L52 16" fill="none" stroke="#BDF75C" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- arrow head -->
+  <path d="M42 16 L52 16 L52 26" fill="none" stroke="#BDF75C" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- base flow line (muted) -->
+  <path d="M12 48 L24 48 L32 48 L52 48" fill="none" stroke="#BDF75C" stroke-width="2" stroke-linecap="round" opacity="0.35"/>
+  <!-- node dot -->
+  <circle cx="24" cy="30" r="3" fill="#BDF75C"/>
+  <circle cx="32" cy="36" r="3" fill="#0B2235"/>
+  <circle cx="32" cy="36" r="1.6" fill="#BDF75C"/>
+</svg>

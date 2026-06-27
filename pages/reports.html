@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reports &amp; Analytics — MoneyFlow</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/icons/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../assets/icons/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../assets/icons/apple-touch-icon.png">
+  <link rel="manifest" href="../site.webmanifest">
+  <meta name="theme-color" content="#071724">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+<div data-app-shell></div>
+<main class="app-main" id="main-content">
+  <div class="container">
+
+    <div class="page-head">
+      <div>
+        <p class="eyebrow">Analytics</p>
+        <h1>Reports &amp; Analytics</h1>
+      </div>
+      <div style="display:flex;gap:var(--space-3);flex-wrap:wrap;" class="no-print">
+        <select id="reportPeriod" aria-label="Report period" style="min-width:160px;">
+          <option value="month">This month</option>
+          <option value="last_month">Last month</option>
+          <option value="quarter">This quarter</option>
+          <option value="year">This year</option>
+          <option value="all">All time</option>
+        </select>
+        <button class="btn btn--ghost" id="btnExportCSV"><i data-lucide="download"></i> CSV</button>
+        <button class="btn btn--ghost" id="btnExportJSON"><i data-lucide="download"></i> JSON</button>
+        <button class="btn btn--primary" id="btnPrint"><i data-lucide="printer"></i> Print</button>
+      </div>
+    </div>
+
+    <!-- KPI strip -->
+    <div class="stats-grid" id="reportKPI" style="margin-bottom:var(--space-6);"></div>
+
+    <!-- CHARTS ROW 1 -->
+    <div class="chart-row" style="margin-bottom:var(--space-5);">
+      <div class="card chart-half">
+        <h3 style="font-size:var(--fs-sm);margin-bottom:var(--space-3);">Expense Breakdown</h3>
+        <div class="chart-canvas-wrap"><canvas id="chartExpPie" role="img" aria-label="Expense pie chart"></canvas></div>
+      </div>
+      <div class="card chart-half">
+        <h3 style="font-size:var(--fs-sm);margin-bottom:var(--space-3);">Income Sources</h3>
+        <div class="chart-canvas-wrap"><canvas id="chartIncPie" role="img" aria-label="Income pie chart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- CHARTS ROW 2 -->
+    <div class="chart-row" style="margin-bottom:var(--space-5);">
+      <div class="card chart-half">
+        <h3 style="font-size:var(--fs-sm);margin-bottom:var(--space-3);">Monthly Trend (12 months)</h3>
+        <div class="chart-canvas-wrap"><canvas id="chartTrend" role="img" aria-label="Monthly income and expense trend"></canvas></div>
+      </div>
+      <div class="card chart-half">
+        <h3 style="font-size:var(--fs-sm);margin-bottom:var(--space-3);">Category Spending</h3>
+        <div class="chart-canvas-wrap"><canvas id="chartCatBar" role="img" aria-label="Spending by category bar chart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- SAVINGS TREND -->
+    <div class="card" style="margin-bottom:var(--space-5);">
+      <h3 style="font-size:var(--fs-sm);margin-bottom:var(--space-3);">Savings Trend (12 months)</h3>
+      <div class="chart-canvas-wrap"><canvas id="chartSavings" role="img" aria-label="Monthly savings trend"></canvas></div>
+    </div>
+
+    <!-- INSIGHTS TABLE -->
+    <div class="section">
+      <div class="section__head"><h2>Period Summary</h2></div>
+      <div class="card" style="padding:0;">
+        <div class="table-wrap" style="border:none;">
+          <table id="summaryTable" aria-label="Period financial summary">
+            <thead>
+              <tr>
+                <th>Category</th>
+                <th style="text-align:right;">Total Spent</th>
+                <th style="text-align:right;">% of Expenses</th>
+                <th style="text-align:right;">Transactions</th>
+                <th style="text-align:right;">Avg per Tx</th>
+              </tr>
+            </thead>
+            <tbody id="summaryBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- SMART INSIGHTS -->
+    <div class="section">
+      <div class="section__head"><h2>Smart Insights</h2></div>
+      <div class="grid-2" id="insightsGrid"></div>
+    </div>
+
+  </div>
+</main>
+
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="../js/command-palette.js"></script>
+<script src="../js/achievements.js"></script>
+<script src="../js/notifications-engine.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+<script src="../js/storage.js"></script>
+<script src="../js/app.js"></script>
+<script src="../js/analytics.js"></script>
+<script src="../js/reports.js"></script>
+</body>
+</html>

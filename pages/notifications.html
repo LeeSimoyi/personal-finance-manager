@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notifications — MoneyFlow</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
+  <link rel="manifest" href="../site.webmanifest">
+  <meta name="theme-color" content="#071724">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+<div data-app-shell></div>
+<main class="app-main" id="main-content">
+  <div class="container">
+    <div class="page-head">
+      <div>
+        <p class="eyebrow">Alerts</p>
+        <h1>Notifications</h1>
+        <p>Budget alerts, goal milestones, bill reminders and achievements.</p>
+      </div>
+      <div style="display:flex;gap:var(--space-3);">
+        <button class="btn btn--ghost btn--sm" id="markAllReadBtn"><i data-lucide="check-check"></i> Mark all read</button>
+        <button class="btn btn--ghost btn--sm" id="clearAllBtn"><i data-lucide="trash-2"></i> Clear all</button>
+      </div>
+    </div>
+
+    <!-- Filter pills -->
+    <div class="pill-tabs" id="notifFilter" role="group" aria-label="Filter notifications">
+      <button class="pill-tab is-active" data-filter="">All</button>
+      <button class="pill-tab" data-filter="budget">Budget</button>
+      <button class="pill-tab" data-filter="goal">Goals</button>
+      <button class="pill-tab" data-filter="subscription">Subscriptions</button>
+      <button class="pill-tab" data-filter="bill">Bills</button>
+      <button class="pill-tab" data-filter="achievement">Achievements</button>
+    </div>
+
+    <!-- Unread count -->
+    <div id="notifCount" style="font-size:var(--fs-sm);color:var(--ink-faint);margin-bottom:var(--space-4);"></div>
+
+    <!-- List -->
+    <div class="card" style="padding:0;" id="notifListWrap">
+      <div id="notifList"></div>
+    </div>
+  </div>
+</main>
+
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="../js/storage.js"></script>
+<script src="../js/app.js"></script>
+<script src="../js/command-palette.js"></script>
+<script src="../js/achievements.js"></script>
+<script src="../js/notifications-engine.js"></script>
+<script>
+(function(){
+  initApp('notifications.html');
+  const user = Auth.user;
+  if (!user) return;
+
+  let currentFilter = '';
+
+  const TYPE_ICON  = { budget:'alert-triangle', goal:'target', subscription:'credit-card', bill:'file-text', achievement:'trophy', default:'bell' };
+  const TYPE_CLASS = { budget:'notif-item__icon--budget', goal:'notif-item__icon--goal', subscription:'notif-item__icon--subscription', bill:'notif-item__icon--bill', achievement:'notif-item__icon--achievement' };
+
+  function timeAgo(iso) {
+    const diff = Date.now() - new Date(iso).getTime();
+    const mins = Math.floor(diff / 60000);
+    if (mins < 1)  return 'Just now';
+    if (mins < 60) return `${mins}m ago`;
+    const hrs = Math.floor(mins / 60);
+    if (hrs < 24)  return `${hrs}h ago`;
+    const days = Math.floor(hrs / 24);
+    if (days < 30) return `${days}d ago`;
+    return new Date(iso).toLocaleDateString();
+  }
+
+  function render() {
+    let notifs = DB.getNotifications(user.id);
+    if (currentFilter) notifs = notifs.filter(n => n.type === currentFilter);
+
+    const unread = notifs.filter(n => !n.read).length;
+    document.getElementById('notifCount').textContent = notifs.length === 0
+      ? 'No notifications.' : `${notifs.length} notification${notifs.length!==1?'s':''} · ${unread} unread`;
+
+    const list = document.getElementById('notifList');
+    if (notifs.length === 0) {
+      list.innerHTML = `<div class="empty-state"><div class="empty-state__icon">${icon('bell-off','icon-xl')}</div><h3>All clear</h3><p>No notifications match this filter.</p></div>`;
+      refreshIcons();
+      return;
+    }
+
+    list.innerHTML = notifs.map(n => `
+      <div class="notif-item ${n.read ? '' : 'is-unread'}" data-id="${n.id}">
+        <div class="notif-item__icon ${TYPE_CLASS[n.type] || 'notif-item__icon--goal'}">
+          ${icon(TYPE_ICON[n.type] || TYPE_ICON.default, 'icon-sm')}
+        </div>
+        <div class="notif-item__body">
+          <div class="notif-item__title">${n.title}</div>
+          <div class="notif-item__desc">${n.body}</div>
+          <div class="notif-item__time">${timeAgo(n.createdAt)}</div>
+        </div>
+        ${!n.read ? '<div class="notif-item__unread-dot" aria-hidden="true"></div>' : ''}
+        <button class="btn btn--ghost btn--sm" style="flex-shrink:0;" onclick="deleteNotif('${n.id}')" aria-label="Delete notification">${icon('x','icon-xs')}</button>
+      </div>`).join('');
+
+    // Click to mark read
+    list.querySelectorAll('.notif-item').forEach(el => {
+      el.addEventListener('click', e => {
+        if (e.target.closest('button')) return;
+        const id = el.getAttribute('data-id');
+        DB.markNotificationRead(id);
+        render();
+        NotificationsEngine.updateBadge(user.id);
+      });
+    });
+
+    refreshIcons();
+  }
+
+  window.deleteNotif = (id) => {
+    DB.deleteNotification(id);
+    render();
+    NotificationsEngine.updateBadge(user.id);
+  };
+
+  document.getElementById('markAllReadBtn').addEventListener('click', () => {
+    DB.markAllNotificationsRead(user.id);
+    render();
+    NotificationsEngine.updateBadge(user.id);
+    Toast.success('All notifications marked as read.');
+  });
+
+  document.getElementById('clearAllBtn').addEventListener('click', () => {
+    const notifs = DB.getNotifications(user.id);
+    notifs.forEach(n => DB.deleteNotification(n.id));
+    render();
+    NotificationsEngine.updateBadge(user.id);
+    Toast.info('All notifications cleared.');
+  });
+
+  document.getElementById('notifFilter').querySelectorAll('.pill-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.pill-tab').forEach(b => b.classList.remove('is-active'));
+      btn.classList.add('is-active');
+      currentFilter = btn.getAttribute('data-filter');
+      render();
+    });
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

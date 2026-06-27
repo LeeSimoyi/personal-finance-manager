@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Subscriptions — MoneyFlow</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
+  <link rel="manifest" href="../site.webmanifest">
+  <meta name="theme-color" content="#071724">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+<div data-app-shell></div>
+<main class="app-main" id="main-content">
+  <div class="container">
+    <div class="page-head">
+      <div>
+        <p class="eyebrow">Recurring Costs</p>
+        <h1>Subscription Manager</h1>
+        <p>Track and manage all your recurring subscriptions.</p>
+      </div>
+      <button class="btn btn--primary" id="btnAddSub"><i data-lucide="plus"></i> Add Subscription</button>
+    </div>
+
+    <!-- SUMMARY STRIP -->
+    <div class="stats-grid" id="subSummary" style="margin-bottom:var(--space-6);"></div>
+
+    <!-- ACTIVE SUBS -->
+    <div class="section">
+      <div class="section__head"><h2>Active Subscriptions</h2></div>
+      <div class="grid-2" id="activeSubsGrid"></div>
+    </div>
+
+    <!-- INACTIVE SUBS -->
+    <div class="section" id="inactiveSection" style="display:none;">
+      <div class="section__head"><h2>Paused / Cancelled</h2></div>
+      <div class="grid-2" id="inactiveSubsGrid"></div>
+    </div>
+  </div>
+</main>
+
+<!-- ADD/EDIT MODAL -->
+<div class="modal" id="subModal" role="dialog" aria-modal="true" aria-labelledby="subModalTitle" aria-hidden="true">
+  <div class="modal__panel">
+    <div class="modal__head">
+      <h2 id="subModalTitle" style="font-size:var(--fs-lg);margin:0;">Add Subscription</h2>
+      <button class="modal__close" data-modal-close aria-label="Close"><i data-lucide="x"></i></button>
+    </div>
+    <div class="modal__body">
+      <form id="subForm" novalidate>
+        <input type="hidden" id="subId">
+        <div class="input-group">
+          <div class="field" style="flex:2">
+            <label for="subName">Service name</label>
+            <input type="text" id="subName" placeholder="e.g. Netflix" required>
+          </div>
+          <div class="field" style="flex:1">
+            <label for="subCategory">Category</label>
+            <select id="subCategory">
+              <option value="streaming">Streaming</option>
+              <option value="music">Music</option>
+              <option value="software">Software</option>
+              <option value="shopping">Shopping</option>
+              <option value="fitness">Fitness</option>
+              <option value="news">News</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="input-group">
+          <div class="field">
+            <label for="subAmount">Amount</label>
+            <input type="number" id="subAmount" min="0.01" step="0.01" placeholder="0.00" required>
+          </div>
+          <div class="field">
+            <label for="subFrequency">Billing cycle</label>
+            <select id="subFrequency">
+              <option value="monthly">Monthly</option>
+              <option value="yearly">Yearly</option>
+              <option value="weekly">Weekly</option>
+              <option value="quarterly">Quarterly</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="subRenewal">Next renewal date</label>
+          <input type="date" id="subRenewal">
+        </div>
+        <div class="field">
+          <label for="subNotes">Notes (optional)</label>
+          <input type="text" id="subNotes" placeholder="Plan type, account info…">
+        </div>
+        <div class="checkbox-row">
+          <input type="checkbox" id="subActive" checked>
+          <label for="subActive" style="text-transform:none;font-size:var(--fs-sm);color:var(--ink);">Active subscription</label>
+        </div>
+        <div style="display:flex;gap:var(--space-3);margin-top:var(--space-5);">
+          <button type="button" class="btn btn--ghost btn--block" data-modal-close>Cancel</button>
+          <button type="submit" class="btn btn--accent btn--block" id="subSaveBtn">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE CONFIRM -->
+<div class="modal" id="subDeleteModal" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modal__panel" style="max-width:360px;">
+    <div class="modal__head">
+      <h2 style="font-size:var(--fs-lg);margin:0;">Delete subscription?</h2>
+      <button class="modal__close" data-modal-close><i data-lucide="x"></i></button>
+    </div>
+    <div class="modal__body">
+      <p>This action cannot be undone.</p>
+      <div style="display:flex;gap:var(--space-3);">
+        <button class="btn btn--ghost btn--block" data-modal-close>Cancel</button>
+        <button class="btn btn--danger btn--block" id="subDeleteConfirmBtn">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="../js/storage.js"></script>
+<script src="../js/app.js"></script>
+<script src="../js/command-palette.js"></script>
+<script src="../js/achievements.js"></script>
+<script src="../js/notifications-engine.js"></script>
+<script>
+(function(){
+  initApp('subscriptions.html');
+  const user = Auth.user;
+  if (!user) return;
+  const currency = Auth.prefs.currency || 'USD';
+  let pendingDeleteId = null;
+
+  const CATEGORY_COLORS = {
+    streaming:'#E0455A', music:'#5B6EF5', software:'#4F9D1D',
+    shopping:'#D4A017', fitness:'#9FE63A', news:'#3DDC97', other:'#8A93A0'
+  };
+
+  function toMonthlyUSD(amountUSD, freq) {
+    if (freq === 'monthly')   return amountUSD;
+    if (freq === 'yearly')    return amountUSD / 12;
+    if (freq === 'weekly')    return amountUSD * 52 / 12;
+    if (freq === 'quarterly') return amountUSD / 3;
+    return amountUSD;
+  }
+
+  function render() {
+    const subs = DB.getSubscriptions(user.id);
+    const active = subs.filter(s => s.active);
+    const inactive = subs.filter(s => !s.active);
+
+    // Summary
+    const monthlyTotal = active.reduce((s, sub) => s + toMonthlyUSD(sub.amountUSD, sub.frequency), 0);
+    const yearlyTotal = monthlyTotal * 12;
+    document.getElementById('subSummary').innerHTML = [
+      { icon:'credit-card', bg:'var(--positive-bg)', bar:'var(--positive)', label:'Monthly Cost', value: fmt(monthlyTotal) },
+      { icon:'calendar',    bg:'var(--info-bg)',     bar:'var(--info)',     label:'Annual Cost',  value: fmt(yearlyTotal) },
+      { icon:'layers',      bg:'var(--negative-bg)', bar:'var(--negative)', label:'Active Subs',  value: active.length },
+      { icon:'bell-off',    bg:'var(--bg-elevated)', bar:'var(--ink-faint)',label:'Paused',        value: inactive.length },
+    ].map(k => `<div class="stat-card" style="--bar-color:${k.bar};--icon-bg:${k.bg}">
+      <div class="stat-card__accent-bar"></div>
+      <div class="stat-card__icon">${icon(k.icon,'icon-md')}</div>
+      <div class="stat-card__label">${k.label}</div>
+      <div class="stat-card__value mono">${k.value}</div>
+    </div>`).join('');
+
+    renderSubGrid('activeSubsGrid', active);
+
+    const inactiveSection = document.getElementById('inactiveSection');
+    if (inactive.length > 0) {
+      inactiveSection.style.display = '';
+      renderSubGrid('inactiveSubsGrid', inactive);
+    } else {
+      inactiveSection.style.display = 'none';
+    }
+
+    if (active.length === 0 && inactive.length === 0) {
+      document.getElementById('activeSubsGrid').innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-state__icon">${icon('credit-card','icon-xl')}</div><h3>No subscriptions yet</h3><p>Track Netflix, Spotify, or any recurring service.</p></div>`;
+    }
+    refreshIcons();
+  }
+
+  function renderSubGrid(gridId, subs) {
+    const grid = document.getElementById(gridId);
+    if (subs.length === 0) { grid.innerHTML = ''; return; }
+    grid.innerHTML = subs.map(sub => {
+      const monthly = toMonthlyUSD(sub.amountUSD, sub.frequency);
+      const initial = (sub.name || '?')[0].toUpperCase();
+      const color = CATEGORY_COLORS[sub.category] || '#8A93A0';
+      const renewal = sub.renewalDate ? new Date(sub.renewalDate).toLocaleDateString(undefined, {month:'short',day:'numeric',year:'numeric'}) : '—';
+      const daysUntil = sub.renewalDate ? Math.ceil((new Date(sub.renewalDate) - new Date()) / 86400000) : null;
+      const renewalBadge = daysUntil !== null && daysUntil <= 7 && daysUntil >= 0
+        ? `<span class="badge badge--negative" style="margin-left:auto;">Due in ${daysUntil}d</span>` : '';
+      return `<div class="sub-card ${!sub.active ? 'is-inactive' : ''}">
+        <div class="sub-card__logo" style="background:${color}20;color:${color}">${initial}</div>
+        <div style="flex:1;min-width:0;">
+          <div style="display:flex;align-items:center;gap:var(--space-2);">
+            <div class="sub-card__name">${sub.name}</div>
+            <span class="badge badge--info" style="text-transform:capitalize;">${sub.category}</span>
+            ${renewalBadge}
+          </div>
+          <div class="sub-card__renewal">${icon('calendar','icon-xs')} Renews ${renewal}</div>
+          ${sub.notes ? `<div style="font-size:var(--fs-xs);color:var(--ink-faint);margin-top:2px;">${sub.notes}</div>` : ''}
+        </div>
+        <div style="text-align:right;flex-shrink:0;">
+          <div class="sub-card__amount">${fmt(convertFromUSD(sub.amountUSD, currency))}</div>
+          <div class="sub-card__freq" style="text-transform:capitalize;">${sub.frequency}</div>
+          <div style="font-size:var(--fs-xs);color:var(--ink-faint);">${fmt(convertFromUSD(monthly, currency))}/mo</div>
+          <div style="display:flex;gap:var(--space-2);margin-top:var(--space-2);justify-content:flex-end;">
+            <button class="btn btn--ghost btn--sm" onclick="editSub('${sub.id}')">${icon('pencil','icon-xs')}</button>
+            <button class="btn btn--danger btn--sm" onclick="deleteSub('${sub.id}')">${icon('trash-2','icon-xs')}</button>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // Add / Edit
+  document.getElementById('btnAddSub').addEventListener('click', () => openModal());
+
+  function openModal(sub = null) {
+    document.getElementById('subModalTitle').textContent = sub ? 'Edit Subscription' : 'Add Subscription';
+    document.getElementById('subId').value = sub ? sub.id : '';
+    document.getElementById('subName').value = sub ? sub.name : '';
+    document.getElementById('subCategory').value = sub ? sub.category : 'streaming';
+    document.getElementById('subAmount').value = sub ? convertFromUSD(sub.amountUSD, currency).toFixed(2) : '';
+    document.getElementById('subFrequency').value = sub ? sub.frequency : 'monthly';
+    document.getElementById('subRenewal').value = sub ? (sub.renewalDate || '') : '';
+    document.getElementById('subNotes').value = sub ? (sub.notes || '') : '';
+    document.getElementById('subActive').checked = sub ? sub.active : true;
+    Modal.open('subModal');
+  }
+
+  window.editSub = (id) => {
+    const sub = DB.getSubscriptions(user.id).find(s => s.id === id);
+    if (sub) openModal(sub);
+  };
+  window.deleteSub = (id) => { pendingDeleteId = id; Modal.open('subDeleteModal'); };
+
+  document.getElementById('subForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const id = document.getElementById('subId').value;
+    const name = document.getElementById('subName').value.trim();
+    const amountRaw = parseFloat(document.getElementById('subAmount').value);
+    if (!name || isNaN(amountRaw) || amountRaw <= 0) { Toast.error('Fill in name and amount.'); return; }
+    const data = {
+      userId: user.id,
+      name,
+      category: document.getElementById('subCategory').value,
+      amountUSD: convertToUSD(amountRaw, currency),
+      frequency: document.getElementById('subFrequency').value,
+      renewalDate: document.getElementById('subRenewal').value || null,
+      notes: document.getElementById('subNotes').value.trim() || null,
+      active: document.getElementById('subActive').checked,
+    };
+    if (id) { DB.updateSubscription(id, data); Toast.success('Subscription updated.'); }
+    else    { DB.addSubscription(data); Toast.success('Subscription added.'); }
+    Modal.close('subModal');
+    render();
+  });
+
+  document.getElementById('subDeleteConfirmBtn').addEventListener('click', () => {
+    if (!pendingDeleteId) return;
+    DB.deleteSubscription(pendingDeleteId);
+    pendingDeleteId = null;
+    Modal.close('subDeleteModal');
+    Toast.success('Subscription deleted.');
+    render();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

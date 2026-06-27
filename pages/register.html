@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Account — MoneyFlow</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/icons/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../assets/icons/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../assets/icons/apple-touch-icon.png">
+  <link rel="manifest" href="../site.webmanifest">
+  <meta name="theme-color" content="#071724">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="../css/auth.css">
+</head>
+<body>
+<div class="auth-page">
+  <aside class="auth-promo" aria-hidden="true">
+    <div class="auth-promo__content">
+      <div class="auth-promo__logo" id="promoLogo"></div>
+      <h2 class="auth-promo__headline">Start your<br><em>financial clarity</em><br>journey today.</h2>
+      <ul class="auth-promo__feats">
+        <li><span class="feat-icon"><i data-lucide="circle-check"></i></span> Free forever — no credit card needed</li>
+        <li><span class="feat-icon"><i data-lucide="shield-check"></i></span> All data stored privately in your browser</li>
+        <li><span class="feat-icon"><i data-lucide="download"></i></span> Export your data any time</li>
+        <li><span class="feat-icon"><i data-lucide="moon"></i></span> Dark mode &amp; 5 currency support</li>
+        <li><span class="feat-icon"><i data-lucide="sparkles"></i></span> Smart AI-style insights generated locally</li>
+      </ul>
+    </div>
+    <div class="auth-promo__art" aria-hidden="true">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 560" width="100%" height="100%" role="img" aria-label="Illustration of a finance dashboard with rising trend line and coins">
+        <defs>
+          <linearGradient id="cardGrad2" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#0F2638"/>
+            <stop offset="100%" stop-color="#0A1B29"/>
+          </linearGradient>
+          <linearGradient id="barGrad2" x1="0" y1="1" x2="0" y2="0">
+            <stop offset="0%" stop-color="#8FD93A"/>
+            <stop offset="100%" stop-color="#BDF75C"/>
+          </linearGradient>
+          <linearGradient id="lineGrad2" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#BDF75C" stop-opacity="0.2"/>
+            <stop offset="100%" stop-color="#BDF75C" stop-opacity="1"/>
+          </linearGradient>
+          <radialGradient id="coinGrad2" cx="35%" cy="30%" r="75%">
+            <stop offset="0%" stop-color="#E8FFB0"/>
+            <stop offset="100%" stop-color="#BDF75C"/>
+          </radialGradient>
+          <filter id="softShadow2" x="-50%" y="-50%" width="200%" height="200%">
+            <feDropShadow dx="0" dy="14" stdDeviation="18" flood-color="#000000" flood-opacity="0.35"/>
+          </filter>
+        </defs>
+        <g transform="translate(430,80)" filter="url(#softShadow2)">
+          <circle r="34" fill="url(#coinGrad2)"/>
+          <text x="0" y="9" font-family="Inter, sans-serif" font-weight="800" font-size="28" fill="#071724" text-anchor="middle">$</text>
+        </g>
+        <g transform="translate(95,420)" filter="url(#softShadow2)">
+          <circle r="24" fill="url(#coinGrad2)" opacity="0.92"/>
+          <text x="0" y="7" font-family="Inter, sans-serif" font-weight="800" font-size="20" fill="#071724" text-anchor="middle">$</text>
+        </g>
+        <circle cx="480" cy="330" r="10" fill="none" stroke="#BDF75C" stroke-width="3" opacity="0.55"/>
+        <circle cx="70" cy="170" r="6" fill="#BDF75C" opacity="0.5"/>
+        <g filter="url(#softShadow2)">
+          <rect x="90" y="150" width="380" height="260" rx="28" fill="url(#cardGrad2)" stroke="#1C3A52" stroke-width="1.5"/>
+          <circle cx="128" cy="190" r="9" fill="#BDF75C"/>
+          <rect x="148" y="184" width="110" height="11" rx="5.5" fill="#CFE3D8" opacity="0.55"/>
+          <rect x="380" y="180" width="60" height="20" rx="10" fill="#BDF75C" opacity="0.18"/>
+          <rect x="392" y="186" width="36" height="8" rx="4" fill="#BDF75C" opacity="0.9"/>
+          <rect x="128" y="216" width="150" height="14" rx="4" fill="#7E92A1" opacity="0.5"/>
+          <rect x="128" y="236" width="190" height="26" rx="6" fill="#F2F7EE" opacity="0.92"/>
+          <g>
+            <rect x="128" y="330" width="22" height="50" rx="5" fill="url(#barGrad2)" opacity="0.55"/>
+            <rect x="160" y="305" width="22" height="75" rx="5" fill="url(#barGrad2)" opacity="0.7"/>
+            <rect x="192" y="285" width="22" height="95" rx="5" fill="url(#barGrad2)" opacity="0.85"/>
+            <rect x="224" y="260" width="22" height="120" rx="5" fill="url(#barGrad2)"/>
+            <rect x="256" y="295" width="22" height="85" rx="5" fill="url(#barGrad2)" opacity="0.75"/>
+          </g>
+          <path d="M128 360 L165 320 L200 335 L232 270 L268 300 L320 245 L380 215" fill="none" stroke="url(#lineGrad2)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="380" cy="215" r="6" fill="#BDF75C"/>
+          <circle cx="380" cy="215" r="11" fill="none" stroke="#BDF75C" stroke-width="2" opacity="0.4"/>
+        </g>
+        <g filter="url(#softShadow2)" transform="translate(330,400)">
+          <rect width="170" height="92" rx="20" fill="#0F2638" stroke="#1C3A52" stroke-width="1.5"/>
+          <rect x="18" y="18" width="80" height="10" rx="5" fill="#CFE3D8" opacity="0.5"/>
+          <rect x="18" y="36" width="50" height="16" rx="5" fill="#F2F7EE" opacity="0.92"/>
+          <rect x="18" y="66" width="134" height="8" rx="4" fill="#1C3A52"/>
+          <rect x="18" y="66" width="92" height="8" rx="4" fill="#BDF75C"/>
+        </g>
+      </svg>
+    </div>
+  </aside>
+
+  <main class="auth-form-panel">
+    <div class="auth-card">
+      <header class="auth-card__header">
+        <div class="auth-card__logo" id="cardLogo"></div>
+        <h1 class="auth-card__title">Create your account</h1>
+        <p class="auth-card__sub">Get started in under a minute.</p>
+      </header>
+
+      <form id="registerForm" novalidate>
+        <div class="field" id="nameField">
+          <label for="name">Full name</label>
+          <input type="text" id="name" name="name" autocomplete="name" placeholder="Enter Your Full Name" required aria-describedby="nameErr">
+          <span class="field-error" id="nameErr" role="alert"></span>
+        </div>
+
+        <div class="field" id="emailField">
+          <label for="email">Email address</label>
+          <input type="email" id="email" name="email" autocomplete="email" placeholder="Enter Your Email Address" required aria-describedby="emailErr">
+          <span class="field-error" id="emailErr" role="alert"></span>
+        </div>
+
+        <div class="field" id="pwField">
+          <label for="password">Password</label>
+          <div class="pw-wrap">
+            <input type="password" id="password" name="password" autocomplete="new-password" placeholder="At least 8 characters" required aria-describedby="pwErr pwStrengthLabel">
+            <button type="button" class="pw-toggle" id="pwToggle" aria-label="Show password" aria-pressed="false"><i data-lucide="eye"></i></button>
+          </div>
+          <div class="pw-strength" id="pwStrength">
+            <div class="pw-strength__bar"><div class="pw-strength__fill" id="pwStrengthFill"></div></div>
+            <span class="pw-strength__label" id="pwStrengthLabel" aria-live="polite">Enter a password</span>
+          </div>
+          <span class="field-error" id="pwErr" role="alert"></span>
+        </div>
+
+        <div class="field" id="pw2Field">
+          <label for="password2">Confirm password</label>
+          <div class="pw-wrap">
+            <input type="password" id="password2" name="password2" autocomplete="new-password" placeholder="Repeat password" required aria-describedby="pw2Err">
+            <button type="button" class="pw-toggle" id="pw2Toggle" aria-label="Show password" aria-pressed="false"><i data-lucide="eye"></i></button>
+          </div>
+          <span class="field-error" id="pw2Err" role="alert"></span>
+        </div>
+
+        <div class="field">
+          <label for="currency">Default currency</label>
+          <select id="currency" name="currency">
+            <option value="USD">USD — US Dollar ($)</option>
+            <option value="EUR">EUR — Euro (€)</option>
+            <option value="GBP">GBP — British Pound (£)</option>
+            <option value="INR">INR — Indian Rupee (₹)</option>
+            <option value="ZWL">ZWL — Zimbabwe Gold (ZiG)</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn btn--accent btn--block" id="regBtn">Create account</button>
+      </form>
+
+      <p class="auth-card__footer">Already have an account? <a href="login.html">Sign in</a></p>
+    </div>
+  </main>
+</div>
+
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="../js/storage.js"></script>
+<script src="../js/app.js"></script>
+<script>
+(function () {
+  Auth.redirectIfLoggedIn();
+  document.documentElement.setAttribute('data-theme', localStorage.getItem('mf_last_theme') || 'light');
+
+  // Brand mark
+  document.getElementById('promoLogo').innerHTML = `<span class="logo-mark">${logoMark(30)}</span> MoneyFlow`;
+  document.getElementById('cardLogo').innerHTML = `<span class="logo-mark">${logoMark(26)}</span> MoneyFlow`;
+
+  // PW visibility toggles
+  [['password','pwToggle'],['password2','pw2Toggle']].forEach(([inputId, btnId]) => {
+    const input = document.getElementById(inputId);
+    const btn = document.getElementById(btnId);
+    btn.addEventListener('click', () => {
+      const show = input.type === 'password';
+      input.type = show ? 'text' : 'password';
+      btn.setAttribute('aria-pressed', String(show));
+      btn.innerHTML = `<i data-lucide="${show ? 'eye-off' : 'eye'}"></i>`;
+      refreshIcons();
+    });
+  });
+
+  // Password strength
+  const pwInput = document.getElementById('password');
+  const strengthWrap = document.getElementById('pwStrength');
+  const strengthFill = document.getElementById('pwStrengthFill');
+  const strengthLabel = document.getElementById('pwStrengthLabel');
+  const levels = ['', 'Weak', 'Fair', 'Good', 'Strong'];
+  const levelColors = ['','#E0455A','#D4A017','#4F9D1D','#4F9D1D'];
+
+  function scorePassword(pw) {
+    let score = 0;
+    if (pw.length >= 8) score++;
+    if (/[A-Z]/.test(pw)) score++;
+    if (/[0-9]/.test(pw)) score++;
+    if (/[^A-Za-z0-9]/.test(pw)) score++;
+    return score;
+  }
+
+  pwInput.addEventListener('input', () => {
+    const pw = pwInput.value;
+    const score = pw.length === 0 ? 0 : scorePassword(pw);
+    strengthWrap.className = `pw-strength pw-s${score}`;
+    strengthFill.style.width = `${score * 25}%`;
+    strengthFill.style.background = levelColors[score];
+    strengthLabel.textContent = pw.length === 0 ? 'Enter a password' : levels[score] || 'Enter a password';
+  });
+
+  // Form submit
+  const form = document.getElementById('registerForm');
+  const btn = document.getElementById('regBtn');
+
+  function setErr(fieldId, errId, msg) {
+    document.getElementById(fieldId).classList.toggle('has-error', !!msg);
+    document.getElementById(errId).textContent = msg;
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    ['nameField','emailField','pwField','pw2Field'].forEach(id => {
+      const errId = id.replace('Field','Err').replace('pw','pw').replace('pw2Field','pw2Err');
+      document.getElementById(id).classList.remove('has-error');
+    });
+
+    const name = form.name.value.trim();
+    const email = form.email.value.trim();
+    const password = form.password.value;
+    const password2 = form.password2.value;
+    const currency = form.currency.value;
+
+    let valid = true;
+    if (!name || name.length < 2) { setErr('nameField','nameErr','Enter your full name (at least 2 characters).'); valid = false; }
+    if (!email || !/\S+@\S+\.\S+/.test(email)) { setErr('emailField','emailErr','Enter a valid email address.'); valid = false; }
+    if (!password || password.length < 8) { setErr('pwField','pwErr','Password must be at least 8 characters.'); valid = false; }
+    if (password !== password2) { setErr('pw2Field','pw2Err','Passwords do not match.'); valid = false; }
+    if (!valid) return;
+
+    btn.disabled = true;
+    btn.textContent = 'Creating account…';
+
+    try {
+      const user = await DB.createUser({ name, email, password });
+      DB.savePrefs(user.id, { currency, theme: 'light' });
+      // Seed sample data so the dashboard isn't empty
+      seedSampleData(user.id, currency);
+      DB.setSession(user.id);
+      window.location.href = 'dashboard.html';
+    } catch (err) {
+      Toast.error(err.message || 'Registration failed. Please try again.');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Create account';
+    }
+  });
+
+  function seedSampleData(userId, currency) {
+    const toUSD = amt => convertToUSD(amt, currency);
+    const now = new Date();
+    const y = now.getFullYear(); const m = now.getMonth();
+    const d = (day) => new Date(y, m, day).toISOString().slice(0,10);
+    const pm = (day) => new Date(y, m-1, day).toISOString().slice(0,10);
+    const ppm = (day) => new Date(y, m-2, day).toISOString().slice(0,10);
+
+    const incomes = [
+      { type:'income', category:'Salary',      amountUSD: toUSD(3500), date: d(1),   note:'Monthly salary' },
+      { type:'income', category:'Freelancing', amountUSD: toUSD(600),  date: d(8),   note:'Web design project' },
+      { type:'income', category:'Investment',  amountUSD: toUSD(150),  date: d(15),  note:'Dividend payment' },
+      { type:'income', category:'Salary',      amountUSD: toUSD(3500), date: pm(1),  note:'Monthly salary' },
+      { type:'income', category:'Freelancing', amountUSD: toUSD(450),  date: pm(12), note:'Logo design' },
+      { type:'income', category:'Salary',      amountUSD: toUSD(3500), date: ppm(1), note:'Monthly salary' },
+    ];
+    const expenses = [
+      { type:'expense', category:'Rent',          amountUSD: toUSD(950),  date: d(2),   note:'Monthly rent' },
+      { type:'expense', category:'Food',           amountUSD: toUSD(68),   date: d(3),   note:'Grocery run' },
+      { type:'expense', category:'Transport',      amountUSD: toUSD(42),   date: d(4),   note:'Fuel' },
+      { type:'expense', category:'Entertainment',  amountUSD: toUSD(25),   date: d(6),   note:'Streaming services' },
+      { type:'expense', category:'Utilities',      amountUSD: toUSD(110),  date: d(7),   note:'Electricity & water' },
+      { type:'expense', category:'Food',           amountUSD: toUSD(55),   date: d(10),  note:'Restaurant' },
+      { type:'expense', category:'Shopping',       amountUSD: toUSD(138),  date: d(12),  note:'Clothing' },
+      { type:'expense', category:'Healthcare',     amountUSD: toUSD(80),   date: d(14),  note:'Pharmacy' },
+      { type:'expense', category:'Education',      amountUSD: toUSD(60),   date: d(16),  note:'Online course' },
+      { type:'expense', category:'Travel',         amountUSD: toUSD(200),  date: d(18),  note:'Weekend trip' },
+      // prev month
+      { type:'expense', category:'Rent',           amountUSD: toUSD(950),  date: pm(2),  note:'Monthly rent' },
+      { type:'expense', category:'Food',           amountUSD: toUSD(82),   date: pm(5),  note:'Grocery run' },
+      { type:'expense', category:'Shopping',       amountUSD: toUSD(95),   date: pm(9),  note:'Books & supplies' },
+      { type:'expense', category:'Transport',      amountUSD: toUSD(55),   date: pm(11), note:'Fuel' },
+      { type:'expense', category:'Entertainment',  amountUSD: toUSD(40),   date: pm(15), note:'Concert ticket' },
+      { type:'expense', category:'Utilities',      amountUSD: toUSD(98),   date: pm(18), note:'Bills' },
+      // two months ago
+      { type:'expense', category:'Rent',           amountUSD: toUSD(950),  date: ppm(2), note:'Monthly rent' },
+      { type:'expense', category:'Food',           amountUSD: toUSD(71),   date: ppm(6), note:'Grocery run' },
+      { type:'expense', category:'Shopping',       amountUSD: toUSD(160),  date: ppm(10),note:'Electronics' },
+    ];
+
+    [...incomes, ...expenses].forEach(tx => DB.addTransaction({ userId, ...tx }));
+
+    DB.setBudget(userId, toUSD(2800));
+    [
+      ['Food', toUSD(400)], ['Rent', toUSD(1000)], ['Shopping', toUSD(300)],
+      ['Transport', toUSD(150)], ['Entertainment', toUSD(150)], ['Utilities', toUSD(130)],
+    ].forEach(([cat, lim]) => DB.setCategoryBudget(userId, cat, lim));
+
+    DB.addGoal({ userId, name:'Emergency Fund', targetUSD: toUSD(10000), currentUSD: toUSD(4200), deadline: new Date(y+1, 5, 1).toISOString().slice(0,10), category:'Emergency Fund' });
+    DB.addGoal({ userId, name:'Vacation Fund', targetUSD: toUSD(2500), currentUSD: toUSD(800), deadline: new Date(y, 11, 1).toISOString().slice(0,10), category:'Vacation Fund' });
+    DB.addGoal({ userId, name:'New Laptop', targetUSD: toUSD(1500), currentUSD: toUSD(1200), deadline: new Date(y, m+2, 1).toISOString().slice(0,10), category:'Other' });
+
+    DB.addRecurring({ userId, type:'income', category:'Salary', amountUSD: toUSD(3500), note:'Monthly salary', frequency:'monthly', nextDate: new Date(y, m+1, 1).toISOString().slice(0,10) });
+    DB.addRecurring({ userId, type:'expense', category:'Rent', amountUSD: toUSD(950), note:'Monthly rent', frequency:'monthly', nextDate: new Date(y, m+1, 2).toISOString().slice(0,10) });
+
+    // V2: Subscriptions
+    if (typeof DB.addSubscription === 'function') {
+      DB.addSubscription({ userId, name:'Netflix', category:'streaming', amountUSD: toUSD(15.99), frequency:'monthly', renewalDate: new Date(y, m+1, 5).toISOString().slice(0,10), active: true });
+      DB.addSubscription({ userId, name:'Spotify', category:'music', amountUSD: toUSD(9.99), frequency:'monthly', renewalDate: new Date(y, m+1, 10).toISOString().slice(0,10), active: true });
+      DB.addSubscription({ userId, name:'Amazon Prime', category:'shopping', amountUSD: toUSD(14.99), frequency:'monthly', renewalDate: new Date(y, m+1, 18).toISOString().slice(0,10), active: true });
+    }
+
+    // V2: Demo debt
+    if (typeof DB.addDebt === 'function') {
+      DB.addDebt({ userId, name:'Car Loan — First Bank', type:'loan', originalAmountUSD: toUSD(12000), remainingAmountUSD: toUSD(8400), interestRate: 6.5, monthlyPaymentUSD: toUSD(280), dueDate: new Date(y, m+1, 15).toISOString().slice(0,10), lender:'First Bank' });
+    }
+
+    // V2: Demo investment
+    if (typeof DB.addInvestment === 'function') {
+      DB.addInvestment({ userId, name:'Vanguard S&P 500 ETF', ticker:'VOO', type:'etf', shares: 5, purchasePriceUSD: toUSD(380), currentPriceUSD: toUSD(425), purchaseDate: new Date(y-1, 6, 15).toISOString().slice(0,10) });
+    }
+  }
+
+  refreshIcons();
+})();
+</script>
+</body>
+</html>
