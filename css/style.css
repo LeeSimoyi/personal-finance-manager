@@ -230,8 +230,15 @@ p { margin: 0 0 var(--space-3); color: var(--ink-soft); }
   box-shadow: var(--shadow-md); 
   transform: translateY(-1px); 
 }
-.btn--accent { background: var(--accent); color: var(--accent-ink); box-shadow: var(--shadow-glow-lime); }
-.btn--accent:hover { background: var(--accent-strong); transform: translateY(-1px); }
+.btn--accent { 
+   background: var(--accent); 
+   color: var(--accent-ink); 
+   box-shadow: var(--shadow-glow-lime);
+}
+.btn--accent:hover { 
+   background: var(--accent-strong);
+   transform: translateY(-1px);
+}
 .btn--ghost { background: transparent; color: var(--ink); border-color: var(--border-strong); }
 .btn--ghost:hover { background: var(--bg-elevated); }
 .btn--danger { background: var(--negative); color: #fff; }
