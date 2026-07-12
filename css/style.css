@@ -272,10 +272,20 @@ p { margin: 0 0 var(--space-3); color: var(--ink-soft); }
   backdrop-filter: blur(18px) saturate(140%);
   -webkit-backdrop-filter: blur(18px) saturate(140%);
 }
-.card--hover:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
-.card--ribbon { position: relative; overflow: hidden; padding-left: calc(var(--space-5) + 4px); }
+.card--hover:hover { 
+   box-shadow: var(--shadow-md); 
+   transform: translateY(-2px); 
+}
+.card--ribbon { 
+   position: relative; 
+   overflow: hidden; 
+   padding-left: calc(var(--space-5) + 4px); 
+}
 .card--ribbon::before {
-  content: ""; position: absolute; inset: 0 auto 0 0; width: 4px;
+  content: ""; 
+   position: absolute; 
+   inset: 0 auto 0 0; 
+   width: 4px;
   background: var(--ribbon, var(--accent));
 }
 
@@ -283,8 +293,13 @@ p { margin: 0 0 var(--space-3); color: var(--ink-soft); }
 
 .field { margin-bottom: var(--space-4); }
 .field label {
-  display: block; font-size: var(--fs-xs); font-weight: 700; letter-spacing: 0.02em;
-  text-transform: uppercase; color: var(--ink-soft); margin-bottom: var(--space-2);
+  display: block; 
+   font-size: var(--fs-xs); 
+   font-weight: 700; 
+   letter-spacing: 0.02em;
+  text-transform: uppercase; 
+   color: var(--ink-soft); 
+   margin-bottom: var(--space-2);
 }
 .field-hint { font-size: var(--fs-2xs); color: var(--ink-faint); margin-top: var(--space-1); }
 .field-error { font-size: var(--fs-2xs); color: var(--negative); margin-top: var(--space-1); display: none; font-weight: 600; }
