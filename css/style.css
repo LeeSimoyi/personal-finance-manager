@@ -342,9 +342,15 @@ input:focus, select:focus, textarea:focus {
 
 .search-field { position: relative; }
 .search-field__icon {
-  position: absolute; left: 0.85em; top: 50%; transform: translateY(-50%);
-  color: var(--ink-faint); pointer-events: none;
-  display: flex; align-items: center; justify-content: center;
+  position: absolute; 
+  left: 0.85em; 
+  top: 50%; 
+  transform: translateY(-50%);
+  color: var(--ink-faint); 
+  pointer-events: none;
+  display: flex; 
+  align-items: center; 
+  justify-content: center;
 }
 .search-field input { padding-left: 2.6em; }
 
@@ -353,9 +359,14 @@ fieldset { border: none; padding: 0; margin: 0; }
 /* ------------------------------------ badges ------------------------------------- */
 
 .badge {
-  display: inline-flex; align-items: center; gap: 0.35em;
-  font-size: var(--fs-2xs); font-weight: 700; letter-spacing: 0.02em;
-  padding: 0.3em 0.7em; border-radius: var(--radius-pill);
+  display: inline-flex; 
+  align-items: center; 
+  gap: 0.35em;
+  font-size: var(--fs-2xs); 
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  padding: 0.3em 0.7em; 
+  border-radius: var(--radius-pill);
 }
 .badge--positive { background: var(--positive-bg); color: var(--positive); }
 .badge--negative { background: var(--negative-bg); color: var(--negative); }
