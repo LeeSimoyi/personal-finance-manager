@@ -403,10 +403,14 @@ tbody tr:hover { background: var(--bg-elevated); }
   width: min(360px, calc(100vw - 2 * var(--space-5)));
 }
 .toast {
-  display: flex; align-items: flex-start; gap: var(--space-3);
+  display: flex; 
+  align-items: flex-start; 
+  gap: var(--space-3);
   width: 100%;
   box-sizing: border-box;
-  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md);
+  background: var(--surface); 
+  border: 1px solid var(--border); 
+  border-radius: var(--radius-md);
   box-shadow: var(--shadow-lg);
   padding: var(--space-4);
   min-height: 56px;
@@ -414,8 +418,14 @@ tbody tr:hover { background: var(--bg-elevated); }
 }
 .toast--in { opacity: 1; transform: translateX(0); }
 .toast__icon {
-  flex-shrink: 0; width: 28px; height: 28px; border-radius: var(--radius-pill);
-  display: flex; align-items: center; justify-content: center; font-size: 0.95rem;
+  flex-shrink: 0; 
+  width: 28px; 
+  height: 28px; 
+  border-radius: var(--radius-pill);
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  font-size: 0.95rem;
   margin-top: 1px;
 }
 .toast--success .toast__icon { background: var(--positive-bg); color: var(--positive); }
@@ -452,9 +462,15 @@ tbody tr:hover { background: var(--bg-elevated); }
    card (not the page) with a contained, styled scrollbar. */
 
 .modal {
-  position: fixed; inset: 0; z-index: 500; display: none;
-  align-items: center; justify-content: center; padding: var(--space-4);
-  background: rgba(5, 13, 20, 0.55); backdrop-filter: blur(4px);
+  position: fixed; 
+  inset: 0; 
+  z-index: 500; 
+  display: none;
+  align-items: center; 
+  justify-content: center; 
+  padding: var(--space-4);
+  background: rgba(5, 13, 20, 0.55); 
+  backdrop-filter: blur(4px);
 }
 .modal.is-open { display: flex; }
 .modal__panel {
