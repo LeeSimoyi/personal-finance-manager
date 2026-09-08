@@ -134,8 +134,14 @@ body {
   -webkit-font-smoothing: antialiased;
   transition: background var(--transition), color var(--transition);
 }
-img { max-width: 100%; display: block; }
-a { color: inherit; text-decoration: none; }
+img { 
+  max-width: 100%; 
+  display: block;
+}
+a { 
+  color: inherit; 
+  text-decoration: none; 
+}
 button { font: inherit; }
 h1, h2, h3, h4 {
   font-family: var(--font-display);
