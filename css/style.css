@@ -383,13 +383,30 @@ fieldset { border: none; padding: 0; margin: 0; }
 
 /* ------------------------------------ tables -------------------------------------- */
 
-.table-wrap { overflow-x: auto; border-radius: var(--radius-md); border: 1px solid var(--border); }
-table { width: 100%; border-collapse: collapse; min-width: 640px; }
+.table-wrap { 
+  overflow-x: auto; 
+  border-radius: var(--radius-md); 
+  border: 1px solid var(--border); 
+}
+table { 
+  width: 100%;
+  border-collapse: collapse; 
+  min-width: 640px;
+}
 thead th {
-  text-align: left; font-size: var(--fs-2xs); text-transform: uppercase; letter-spacing: 0.04em;
-  color: var(--ink-faint); font-weight: 700; padding: var(--space-3) var(--space-4);
-  background: var(--bg-elevated); border-bottom: 1px solid var(--border);
-  position: sticky; top: 0; cursor: pointer; user-select: none;
+  text-align: left; 
+  font-size: var(--fs-2xs); 
+  text-transform: uppercase; 
+  letter-spacing: 0.04em;
+  color: var(--ink-faint); 
+  font-weight: 700; 
+  padding: var(--space-3) var(--space-4);
+  background: var(--bg-elevated); 
+  border-bottom: 1px solid var(--border);
+  position: sticky; 
+  top: 0; 
+  cursor: pointer; 
+  user-select: none;
 }
 thead th[aria-sort="ascending"]::after { content: " ▲"; font-size: 0.65em; }
 thead th[aria-sort="descending"]::after { content: " ▼"; font-size: 0.65em; }
