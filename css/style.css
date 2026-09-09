@@ -948,9 +948,14 @@ tbody tr:hover { background: var(--bg-elevated); }
 /* ── Pill tabs (used in some V2 pages) ── */
 .pill-tabs { display: flex; gap: var(--space-2); flex-wrap: wrap; margin-bottom: var(--space-5); }
 .pill-tab {
-  padding: 0.45em 1.1em; border-radius: var(--radius-pill);
-  border: 1px solid var(--border-strong); background: transparent;
-  color: var(--ink-soft); font-size: var(--fs-sm); font-weight: 600; cursor: pointer;
+  padding: 0.45em 1.1em; 
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-strong); 
+  background: transparent;
+  color: var(--ink-soft); 
+  font-size: var(--fs-sm); 
+  font-weight: 600; 
+  cursor: pointer;
   transition: all var(--transition);
 }
 .pill-tab.is-active { background: var(--brand); color: var(--brand-ink); border-color: var(--brand); }
