@@ -422,8 +422,13 @@ tbody tr:hover { background: var(--bg-elevated); }
    constrained width instead of stretching the toast wide or squashing it thin. */
 
 .toast-region {
-  position: fixed; top: var(--space-5); right: var(--space-5); z-index: 999;
-  display: flex; flex-direction: column; gap: var(--space-3);
+  position: fixed; 
+  top: var(--space-5); 
+  right: var(--space-5); 
+  z-index: 999;
+  display: flex; 
+  flex-direction: column; 
+  gap: var(--space-3);
   width: min(360px, calc(100vw - 2 * var(--space-5)));
 }
 .toast {
@@ -543,11 +548,17 @@ tbody tr:hover { background: var(--bg-elevated); }
 /* -------------------------------------- empty state ---------------------------------- */
 
 .empty-state {
-  text-align: center; padding: var(--space-7) var(--space-4); color: var(--ink-soft);
+  text-align: center; 
+  padding: var(--space-7) var(--space-4); 
+  color: var(--ink-soft);
 }
 .empty-state__icon {
-  font-size: 2.4rem; margin-bottom: var(--space-3); color: var(--ink-faint);
-  display: flex; align-items: center; justify-content: center;
+  font-size: 2.4rem; 
+  margin-bottom: var(--space-3); 
+  color: var(--ink-faint);
+  display: flex; 
+  align-items: center; 
+  justify-content: center;
 }
 .empty-state h3 { color: var(--ink); }
 
