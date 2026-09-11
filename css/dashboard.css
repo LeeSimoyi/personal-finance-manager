@@ -240,7 +240,9 @@
 }
 
 .budget-item {
-  display: flex; flex-direction: column; gap: var(--space-2);
+  display: flex; 
+  flex-direction: column; 
+  gap: var(--space-2);
   padding: var(--space-3) 0;
   border-bottom: 1px solid var(--border);
 }
@@ -252,15 +254,22 @@
 /* ── recent transactions mini-list ────────────────────────────────────────── */
 
 .tx-mini-item {
-  display: flex; align-items: center; gap: var(--space-3);
+  display: flex; 
+  align-items: center; 
+  gap: var(--space-3);
   padding: var(--space-3) 0;
   border-bottom: 1px solid var(--border);
 }
 .tx-mini-item:last-child { border-bottom: none; }
 .tx-mini__icon {
-  width: 36px; height: 36px; border-radius: var(--radius-sm);
+  width: 36px; 
+  height: 36px;
+  border-radius: var(--radius-sm);
   background: var(--icon-bg, var(--info-bg));
-  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  flex-shrink: 0;
   font-size: 1rem;
 }
 .tx-mini__info { flex: 1; min-width: 0; }
