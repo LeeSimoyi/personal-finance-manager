@@ -137,8 +137,11 @@
   font-size: 1.2em;
 }
 .stat-card__label {
-  font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: 0.07em;
-  color: var(--ink-faint); font-weight: 700;
+  font-size: var(--fs-xs); 
+  text-transform: uppercase; 
+  letter-spacing: 0.07em;
+  color: var(--ink-faint); 
+  font-weight: 700;
 }
 .stat-card__value {
   font-family: var(--font-mono);
@@ -148,8 +151,11 @@
   line-height: 1;
 }
 .stat-card__trend {
-  font-size: var(--fs-xs); color: var(--ink-faint);
-  display: flex; align-items: center; gap: 4px;
+  font-size: var(--fs-xs);
+  color: var(--ink-faint);
+  display: flex; 
+  align-items: center;
+  gap: 4px;
 }
 .trend-up { color: var(--positive); }
 .trend-down { color: var(--negative); }
