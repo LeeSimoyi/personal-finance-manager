@@ -172,15 +172,21 @@
 .health-score__ring svg { transform: rotate(-90deg); }
 .health-score__ring-bg { fill: none; stroke: var(--border-strong); stroke-width: 6; }
 .health-score__ring-fill {
-  fill: none; stroke-width: 6;
+  fill: none; 
+  stroke-width: 6;
   stroke-linecap: round;
   transition: stroke-dashoffset 800ms cubic-bezier(0.4,0,0.2,1);
   stroke: var(--score-color, var(--positive));
 }
 .health-score__num {
-  position: absolute; inset: 0;
-  display: flex; align-items: center; justify-content: center;
-  font-family: var(--font-mono); font-weight: 700; font-size: var(--fs-md);
+  position: absolute; 
+  inset: 0;
+  display: flex; 
+  align-items: center; 
+  justify-content: center;
+  font-family: var(--font-mono); 
+  font-weight: 700; 
+  font-size: var(--fs-md);
   color: var(--ink);
 }
 .health-score__label { font-size: var(--fs-xs); text-align: center; color: var(--ink-faint); }
