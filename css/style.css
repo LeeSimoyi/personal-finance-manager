@@ -537,7 +537,10 @@ tbody tr:hover { background: var(--bg-elevated); }
   border-radius: var(--radius-pill);
   transition: background var(--transition), color var(--transition);
 }
-.modal__close:hover { background: var(--bg-elevated); color: var(--ink); }
+.modal__close:hover { 
+  background: var(--bg-elevated); 
+  color: var(--ink);
+}
 .modal__body {
   padding: var(--space-5) var(--space-6) var(--space-6);
   overflow-y: auto;
@@ -589,7 +592,12 @@ tbody tr:hover { background: var(--bg-elevated); }
   cursor: pointer; 
   padding: var(--space-2);
 }
-.topbar__menu span { width: 20px; height: 2px; background: var(--ink); border-radius: 2px; }
+.topbar__menu span { 
+  width: 20px; 
+  height: 2px; 
+  background: var(--ink); 
+  border-radius: 2px;
+}
 .topbar__brand {
   font-family: var(--font-display); font-weight: 600; font-size: var(--fs-md);
   display: flex; align-items: center; gap: var(--space-2); color: var(--ink);
