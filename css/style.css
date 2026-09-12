@@ -599,8 +599,13 @@ tbody tr:hover { background: var(--bg-elevated); }
   border-radius: 2px;
 }
 .topbar__brand {
-  font-family: var(--font-display); font-weight: 600; font-size: var(--fs-md);
-  display: flex; align-items: center; gap: var(--space-2); color: var(--ink);
+  font-family: var(--font-display); 
+  font-weight: 600; 
+  font-size: var(--fs-md);
+  display: flex; 
+  align-items: center;
+  gap: var(--space-2); 
+  color: var(--ink);
 }
 .topbar__brand-mark { display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .topbar__actions { margin-left: auto; display: flex; align-items: center; gap: var(--space-3); }
