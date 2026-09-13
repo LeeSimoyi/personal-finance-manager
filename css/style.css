@@ -746,8 +746,12 @@ tbody tr:hover { background: var(--bg-elevated); }
 
 /* ── Command Palette ── */
 .cmd-palette {
-  position: fixed; inset: 0; z-index: 9999;
-  display: none; align-items: flex-start; justify-content: center;
+  position: fixed; 
+  inset: 0; 
+  z-index: 9999;
+  display: none;
+  align-items: flex-start; 
+  justify-content: center;
   padding-top: clamp(60px, 12vh, 140px);
 }
 .cmd-palette.is-open { display: flex; }
@@ -805,13 +809,19 @@ tbody tr:hover { background: var(--bg-elevated); }
   overflow-y: auto;
 }
 .cmd-palette__group {
-  font-size: var(--fs-2xs); text-transform: uppercase; letter-spacing: 0.08em;
-  color: var(--ink-faint); font-weight: 700;
+  font-size: var(--fs-2xs);
+  text-transform: uppercase; 
+  letter-spacing: 0.08em;
+  color: var(--ink-faint); 
+  font-weight: 700;
   padding: var(--space-2) var(--space-5) var(--space-1);
 }
 .cmd-palette__item {
-  display: flex; align-items: center; gap: var(--space-3);
-  padding: 0.65em var(--space-5); cursor: pointer;
+  display: flex; 
+  align-items: center; 
+  gap: var(--space-3);
+  padding: 0.65em var(--space-5); 
+  cursor: pointer;
   transition: background var(--transition);
 }
 .cmd-palette__item.is-selected { background: var(--positive-bg); }
