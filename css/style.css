@@ -192,13 +192,13 @@ p {
 
 .skip-link {
   position: absolute; 
-   left: -999px; 
-   top: 0; 
-   z-index: 200;
+  left: -999px; 
+  top: 0; 
+  z-index: 200;
   background: var(--accent); 
   color: var(--accent-ink);
   padding: var(--space-2) var(--space-4); 
-   border-radius: 0 0 var(--radius-sm) 0;
+  border-radius: 0 0 var(--radius-sm) 0;
   font-weight: 700;
 }
 .skip-link:focus { left: 0; }
@@ -252,7 +252,11 @@ p {
    background: var(--accent-strong);
    transform: translateY(-1px);
 }
-.btn--ghost { background: transparent; color: var(--ink); border-color: var(--border-strong); }
+.btn--ghost { 
+   background: transparent; 
+   color: var(--ink); 
+   border-color: var(--border-strong); 
+}
 .btn--ghost:hover { background: var(--bg-elevated); }
 .btn--danger { background: var(--negative); color: #fff; }
 .btn--danger:hover { filter: brightness(1.08); transform: translateY(-1px); }
@@ -313,7 +317,7 @@ p {
 
 .field { margin-bottom: var(--space-4); }
 .field label {
-  display: block; 
+   display: block; 
    font-size: var(--fs-xs); 
    font-weight: 700; 
    letter-spacing: 0.02em;
