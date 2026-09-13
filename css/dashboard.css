@@ -307,8 +307,17 @@
   box-shadow: var(--shadow-sm);
   transition: box-shadow var(--transition), transform var(--transition);
 }
-.goal-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
-.goal-card__head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: var(--space-3); gap: var(--space-2); }
+.goal-card:hover { 
+  box-shadow: var(--shadow-md); 
+  transform: translateY(-2px); 
+}
+.goal-card__head { 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: flex-start; 
+  margin-bottom: var(--space-3); 
+  gap: var(--space-2);
+}
 .goal-card__name { font-weight: 700; font-size: var(--fs-base); }
 .goal-card__pct { font-family: var(--font-mono); font-size: var(--fs-xl); font-weight: 700; color: var(--positive); }
 .goal-card__amounts { display: flex; justify-content: space-between; font-size: var(--fs-xs); color: var(--ink-faint); margin-top: var(--space-2); }
