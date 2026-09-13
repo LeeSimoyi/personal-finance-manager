@@ -197,7 +197,11 @@
 
 /* ── quick-action buttons ─────────────────────────────────────────────────── */
 
-.quick-actions { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+.quick-actions { 
+  display: flex; 
+  flex-wrap: wrap; 
+  gap: var(--space-3);
+}
 
 /* ── insight cards ────────────────────────────────────────────────────────── */
 
@@ -277,8 +281,17 @@
   flex-shrink: 0;
   font-size: 1rem;
 }
-.tx-mini__info { flex: 1; min-width: 0; }
-.tx-mini__cat { font-weight: 600; font-size: var(--fs-sm); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tx-mini__info { 
+  flex: 1; 
+  min-width: 0; 
+}
+.tx-mini__cat { 
+  font-weight: 600; 
+  font-size: var(--fs-sm);
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+  white-space: nowrap; 
+}
 .tx-mini__note { font-size: var(--fs-xs); color: var(--ink-faint); }
 .tx-mini__right { text-align: right; flex-shrink: 0; }
 .tx-mini__amount { font-family: var(--font-mono); font-size: var(--fs-sm); font-weight: 700; }
