@@ -611,8 +611,18 @@ tbody tr:hover { background: var(--bg-elevated); }
   gap: var(--space-2); 
   color: var(--ink);
 }
-.topbar__brand-mark { display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.topbar__actions { margin-left: auto; display: flex; align-items: center; gap: var(--space-3); }
+.topbar__brand-mark { 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  flex-shrink: 0;
+}
+.topbar__actions { 
+  margin-left: auto; 
+  display: flex; 
+  align-items: center; 
+  gap: var(--space-3);
+}
 .topbar__user { display: flex; align-items: center; gap: var(--space-2); }
 .topbar__user-name { font-size: var(--fs-sm); font-weight: 600; display: none; }
 .avatar {
