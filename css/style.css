@@ -623,8 +623,16 @@ tbody tr:hover { background: var(--bg-elevated); }
   align-items: center; 
   gap: var(--space-3);
 }
-.topbar__user { display: flex; align-items: center; gap: var(--space-2); }
-.topbar__user-name { font-size: var(--fs-sm); font-weight: 600; display: none; }
+.topbar__user { 
+  display: flex; 
+  align-items: center; 
+  gap: var(--space-2); 
+}
+.topbar__user-name { 
+  font-size: var(--fs-sm); 
+  font-weight: 600; 
+  display: none;
+}
 .avatar {
   width: 36px; 
   height: 36px; 
