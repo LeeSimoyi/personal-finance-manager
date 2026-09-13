@@ -731,13 +731,22 @@ tbody tr:hover { background: var(--bg-elevated); }
    ════════════════════════════════════════════════════════════════════════ */
 
 /* ── Topbar V2 additions ── */
-.topbar__brand-name { font-family: var(--font-display); font-weight: 600; font-size: var(--fs-md); }
+.topbar__brand-name { 
+  font-family: var(--font-display); 
+  font-weight: 600; 
+  font-size: var(--fs-md); 
+}
 .topbar__cmd-btn {
   display: none;
-  align-items: center; gap: 6px;
-  background: var(--bg-elevated); border: 1px solid var(--border-strong);
-  border-radius: var(--radius-sm); padding: 5px 10px;
-  color: var(--ink-faint); font-size: var(--fs-xs); cursor: pointer;
+  align-items: center; 
+  gap: 6px;
+  background: var(--bg-elevated); 
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm); 
+  padding: 5px 10px;
+  color: var(--ink-faint); 
+  font-size: var(--fs-xs); 
+  cursor: pointer;
   transition: background var(--transition), border-color var(--transition);
 }
 .topbar__cmd-btn:hover { background: var(--surface); border-color: var(--ink-faint); color: var(--ink); }
