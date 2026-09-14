@@ -325,8 +325,18 @@ p {
    color: var(--ink-soft); 
    margin-bottom: var(--space-2);
 }
-.field-hint { font-size: var(--fs-2xs); color: var(--ink-faint); margin-top: var(--space-1); }
-.field-error { font-size: var(--fs-2xs); color: var(--negative); margin-top: var(--space-1); display: none; font-weight: 600; }
+.field-hint { 
+  font-size: var(--fs-2xs); 
+  color: var(--ink-faint); 
+  margin-top: var(--space-1);
+}
+.field-error { 
+  font-size: var(--fs-2xs); 
+  color: var(--negative); 
+  margin-top: var(--space-1); 
+  display: none; 
+  font-weight: 600;
+}
 .field.has-error .field-error { display: block; }
 .field.has-error input, .field.has-error select { border-color: var(--negative) !important; }
 
