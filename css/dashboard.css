@@ -342,8 +342,30 @@
   margin-bottom: var(--space-3); 
   gap: var(--space-2);
 }
-.goal-card__name { font-weight: 700; font-size: var(--fs-base); }
-.goal-card__pct { font-family: var(--font-mono); font-size: var(--fs-xl); font-weight: 700; color: var(--positive); }
-.goal-card__amounts { display: flex; justify-content: space-between; font-size: var(--fs-xs); color: var(--ink-faint); margin-top: var(--space-2); }
-.goal-card__deadline { font-size: var(--fs-xs); color: var(--ink-faint); margin-top: var(--space-2); }
-.goal-card__actions { display: flex; gap: var(--space-2); margin-top: var(--space-4); }
+.goal-card__name { 
+  font-weight: 700; 
+  font-size: var(--fs-base); 
+}
+.goal-card__pct { 
+  font-family: var(--font-mono); 
+  font-size: var(--fs-xl); 
+  font-weight: 700;
+  color: var(--positive); 
+}
+.goal-card__amounts { 
+  display: flex; 
+  justify-content: space-between; 
+  font-size: var(--fs-xs); 
+  color: var(--ink-faint); 
+  margin-top: var(--space-2); 
+}
+.goal-card__deadline { 
+  font-size: var(--fs-xs); 
+  color: var(--ink-faint); 
+  margin-top: var(--space-2);
+}
+.goal-card__actions { 
+  display: flex; 
+  gap: var(--space-2); 
+  margin-top: var(--space-4);
+}
