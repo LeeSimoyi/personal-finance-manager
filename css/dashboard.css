@@ -168,9 +168,17 @@
   align-items: center;
   gap: var(--space-2);
 }
-.health-score__ring { position: relative; width: 80px; height: 80px; }
+.health-score__ring { 
+  position: relative; 
+  width: 80px; 
+  height: 80px; 
+}
 .health-score__ring svg { transform: rotate(-90deg); }
-.health-score__ring-bg { fill: none; stroke: var(--border-strong); stroke-width: 6; }
+.health-score__ring-bg { 
+  fill: none; 
+  stroke: var(--border-strong); 
+  stroke-width: 6; 
+}
 .health-score__ring-fill {
   fill: none; 
   stroke-width: 6;
