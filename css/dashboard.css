@@ -327,10 +327,23 @@
   text-overflow: ellipsis; 
   white-space: nowrap; 
 }
-.tx-mini__note { font-size: var(--fs-xs); color: var(--ink-faint); }
-.tx-mini__right { text-align: right; flex-shrink: 0; }
-.tx-mini__amount { font-family: var(--font-mono); font-size: var(--fs-sm); font-weight: 700; }
-.tx-mini__date { font-size: var(--fs-xs); color: var(--ink-faint); }
+.tx-mini__note { 
+  font-size: var(--fs-xs); 
+  color: var(--ink-faint); 
+}
+.tx-mini__right {
+  text-align: right; 
+  flex-shrink: 0; 
+}
+.tx-mini__amount { 
+  font-family: var(--font-mono); 
+  font-size: var(--fs-sm); 
+  font-weight: 700; 
+}
+.tx-mini__date { 
+  font-size: var(--fs-xs);
+  color: var(--ink-faint);
+}
 
 /* ── goal progress cards ───────────────────────────────────────────────────── */
 
