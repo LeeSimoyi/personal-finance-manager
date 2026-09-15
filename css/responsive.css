@@ -5,10 +5,26 @@
 
 /* ──────────────────────── SHARED DEFAULTS (all widths) ───────────────────── */
 
-.grid-2 { display: grid; grid-template-columns: 1fr; gap: var(--space-4); }
-.grid-3 { display: grid; grid-template-columns: 1fr; gap: var(--space-4); }
-.grid-4 { display: grid; grid-template-columns: 1fr; gap: var(--space-4); }
-.grid-auto { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--space-4); }
+.grid-2 { 
+   display: grid; 
+   grid-template-columns: 1fr; 
+   gap: var(--space-4); 
+}
+.grid-3 { 
+   display: grid; 
+   grid-template-columns: 1fr; 
+   gap: var(--space-4); 
+}
+.grid-4 { 
+   display: grid; 
+   grid-template-columns: 1fr; 
+   gap: var(--space-4); 
+}
+.grid-auto { 
+   display: grid; 
+   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); 
+   gap: var(--space-4); 
+}
 
 /* ──────────────────────── MOBILE: up to 479px (SE, S8, A51) ─────────────── */
 
