@@ -114,7 +114,10 @@
   position: relative;
   overflow: hidden;
 }
-.stat-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+.stat-card:hover { 
+  box-shadow: var(--shadow-md); 
+  transform: translateY(-2px); 
+}
 
 .stat-card__accent-bar {
   position: absolute;
@@ -226,8 +229,16 @@
   transition: background var(--transition);
 }
 .insight-card:hover { background: var(--surface); }
-.insight-card__icon { font-size: 1.4rem; flex-shrink: 0; line-height: 1; }
-.insight-card__title { font-weight: 700; color: var(--ink); margin-bottom: 2px; }
+.insight-card__icon { 
+  font-size: 1.4rem; 
+  flex-shrink: 0; 
+  line-height: 1; 
+}
+.insight-card__title { 
+  font-weight: 700; 
+  color: var(--ink); 
+  margin-bottom: 2px; 
+}
 .insight-card__body { color: var(--ink-soft); }
 
 /* ── progress bars ─────────────────────────────────────────────────────────── */
