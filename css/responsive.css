@@ -31,13 +31,25 @@
 .topbar__menu { display: flex; }
 .sidenav { transform: translateX(-100%); }
 .sidenav.is-open { transform: translateX(0); }
-.app-main { padding-left: var(--space-4); padding-right: var(--space-4); }
+.app-main { 
+   padding-left: var(--space-4); 
+   padding-right: var(--space-4);
+}
 
 .card { padding: var(--space-4); }
 .modal__panel { padding: var(--space-4); }
-.toast-region { left: var(--space-3); right: var(--space-3); top: calc(var(--topbar-h) + var(--space-3)); max-width: none; }
+.toast-region { 
+   left: var(--space-3);
+   right: var(--space-3); 
+   top: calc(var(--topbar-h) + var(--space-3)); 
+   max-width: none; 
+}
 
-.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); }
+.stats-grid { 
+   display: grid;
+   grid-template-columns: 1fr 1fr; 
+   gap: var(--space-3);
+}
 .stats-grid .stat-card:first-child { grid-column: 1 / -1; }
 
 .page-head { flex-direction: column; align-items: flex-start; }
