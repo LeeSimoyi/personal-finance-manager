@@ -400,9 +400,18 @@ fieldset { border: none; padding: 0; margin: 0; }
   padding: 0.3em 0.7em; 
   border-radius: var(--radius-pill);
 }
-.badge--positive { background: var(--positive-bg); color: var(--positive); }
-.badge--negative { background: var(--negative-bg); color: var(--negative); }
-.badge--info { background: var(--info-bg); color: var(--info); }
+.badge--positive { 
+  background: var(--positive-bg); 
+  color: var(--positive); 
+}
+.badge--negative {
+  background: var(--negative-bg);
+  color: var(--negative); 
+}
+.badge--info { 
+  background: var(--info-bg); 
+  color: var(--info); 
+}
 .badge--accent { background: rgba(189,247,92,0.2); color: #5C8C1E; }
 [data-theme="dark"] .badge--accent { color: var(--lime); }
 
