@@ -745,10 +745,26 @@ tbody tr:hover { background: var(--bg-elevated); }
 [data-theme="dark"] .eyebrow { color: var(--lime); }
 
 .section { margin-bottom: var(--space-7); }
-.section__head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: var(--space-4); gap: var(--space-3); flex-wrap: wrap; }
-.section__head h2 { font-size: var(--fs-lg); margin: 0; }
+.section__head { 
+  display: flex; 
+  align-items: baseline; 
+  justify-content: space-between;
+  margin-bottom: var(--space-4); 
+  gap: var(--space-3); 
+  flex-wrap: wrap;
+}
+.section__head h2 { 
+  font-size: var(--fs-lg); 
+  margin: 0; 
+}
 
-.tabs { display: flex; gap: var(--space-2); border-bottom: 1px solid var(--border); margin-bottom: var(--space-5); overflow-x: auto; }
+.tabs { 
+  display: flex;
+  gap: var(--space-2); 
+  border-bottom: 1px solid var(--border); 
+  margin-bottom: var(--space-5); 
+  overflow-x: auto;
+}
 .tab-btn {
   background: none; 
   border: none; 
