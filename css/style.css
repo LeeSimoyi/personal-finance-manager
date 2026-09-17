@@ -258,8 +258,14 @@ p {
    border-color: var(--border-strong); 
 }
 .btn--ghost:hover { background: var(--bg-elevated); }
-.btn--danger { background: var(--negative); color: #fff; }
-.btn--danger:hover { filter: brightness(1.08); transform: translateY(-1px); }
+.btn--danger { 
+  background: var(--negative); 
+  color: #fff; 
+}
+.btn--danger:hover { 
+  filter: brightness(1.08); 
+  transform: translateY(-1px); 
+}
 .btn--sm { padding: 0.45em 1em; font-size: var(--fs-xs); }
 .btn--block { width: 100%; }
 .btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none !important; }
