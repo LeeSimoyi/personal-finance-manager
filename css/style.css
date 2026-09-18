@@ -728,11 +728,20 @@ tbody tr:hover { background: var(--bg-elevated); }
 .sidenav__link.is-active { background: var(--accent); color: var(--accent-ink); }
 .sidenav__icon { font-size: 1.1em; width: 1.4em; display: inline-flex; justify-content: center; flex-shrink: 0; }
 .sidenav__logout {
-  display: flex; align-items: center; justify-content: center; gap: var(--space-2);
+  display: flex; 
+  align-items: center; 
+  justify-content: center;
+  gap: var(--space-2);
   background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.12); color: #fff; padding: 0.75em 1em; border-radius: var(--radius-md);
-  cursor: pointer; font-weight: 600; font-size: var(--fs-sm);
-  text-align: center; width: 100%;
+  border: 1px solid rgba(255,255,255,0.12); 
+  color: #fff; 
+  padding: 0.75em 1em;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-weight: 600; 
+  font-size: var(--fs-sm);
+  text-align: center; 
+  width: 100%;
 }
 .sidenav__logout:hover { background: rgba(255,255,255,0.14); }
 .sidenav__overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 80; opacity: 0; pointer-events: none; transition: opacity var(--transition); }
