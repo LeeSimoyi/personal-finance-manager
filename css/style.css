@@ -750,7 +750,15 @@ tbody tr:hover { background: var(--bg-elevated); }
   width: 100%;
 }
 .sidenav__logout:hover { background: rgba(255,255,255,0.14); }
-.sidenav__overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 80; opacity: 0; pointer-events: none; transition: opacity var(--transition); }
+.sidenav__overlay { 
+  position: fixed; 
+  inset: 0; 
+  background: rgba(0,0,0,0.4); 
+  z-index: 80; 
+  opacity: 0; 
+  pointer-events: none; 
+  transition: opacity var(--transition); 
+}
 .sidenav__overlay.is-open { opacity: 1; pointer-events: auto; }
 
 .app-main {
