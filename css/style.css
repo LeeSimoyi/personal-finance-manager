@@ -726,7 +726,13 @@ tbody tr:hover { background: var(--bg-elevated); }
 }
 .sidenav__link:hover { background: rgba(255,255,255,0.08); color: #fff; }
 .sidenav__link.is-active { background: var(--accent); color: var(--accent-ink); }
-.sidenav__icon { font-size: 1.1em; width: 1.4em; display: inline-flex; justify-content: center; flex-shrink: 0; }
+.sidenav__icon { 
+  font-size: 1.1em; 
+  width: 1.4em; 
+  display: inline-flex; 
+  justify-content: center; 
+  flex-shrink: 0;
+}
 .sidenav__logout {
   display: flex; 
   align-items: center; 
